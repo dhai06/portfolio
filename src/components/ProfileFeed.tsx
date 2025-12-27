@@ -1,13 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import { MoreHorizontal, ChevronLeft, ChevronRight, BadgeCheck } from 'lucide-react';
+import { ChevronLeft, ChevronRight, BadgeCheck } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import PhotoBlock from './PhotoBlock';
 import PromptBlock from './PromptBlock';
 import InfoPillsBlock from './InfoPillsBlock';
 import DetailsPage from './DetailsPage';
 import Menu from './Menu';
+import AboutIntroBlock from './AboutIntroBlock';
 import { CardData } from '@/data/portfolioData';
 
 interface ProfileFeedProps {
@@ -36,25 +37,61 @@ export default function ProfileFeed({ profiles }: ProfileFeedProps) {
         const blocks: React.ReactNode[] = [];
         const maxLen = Math.max(currentProfile.images.length, currentProfile.prompts.length);
 
-        for (let i = 0; i < maxLen; i++) {
-            if (currentProfile.images[i]) {
-                blocks.push(
-                    <PhotoBlock
-                        key={`img-${i}`}
-                        src={currentProfile.images[i]}
-                        alt={currentProfile.name}
-                        onLike={handleLike}
-                    />
-                );
+        // For about page, render first image and first prompt side by side
+        if (currentProfile.type === 'about' && currentProfile.images[0]) {
+            blocks.push(
+                <AboutIntroBlock
+                    key="about-intro-0"
+                    imageSrc={currentProfile.images[0]}
+                    imageAlt={currentProfile.name}
+                    onLike={handleLike}
+                />
+            );
+
+            // Continue with remaining blocks starting from index 1
+            for (let i = 1; i < maxLen; i++) {
+                if (currentProfile.images[i]) {
+                    blocks.push(
+                        <PhotoBlock
+                            key={`img-${i}`}
+                            src={currentProfile.images[i]}
+                            alt={currentProfile.name}
+                            onLike={handleLike}
+                        />
+                    );
+                }
+                if (currentProfile.prompts[i]) {
+                    blocks.push(
+                        <PromptBlock
+                            key={`prompt-${i}`}
+                            prompt={currentProfile.prompts[i]}
+                            onLike={handleLike}
+                        />
+                    );
+                }
             }
-            if (currentProfile.prompts[i]) {
-                blocks.push(
-                    <PromptBlock
-                        key={`prompt-${i}`}
-                        prompt={currentProfile.prompts[i]}
-                        onLike={handleLike}
-                    />
-                );
+        } else {
+            // For other profile types, use normal interleaving
+            for (let i = 0; i < maxLen; i++) {
+                if (currentProfile.images[i]) {
+                    blocks.push(
+                        <PhotoBlock
+                            key={`img-${i}`}
+                            src={currentProfile.images[i]}
+                            alt={currentProfile.name}
+                            onLike={handleLike}
+                        />
+                    );
+                }
+                if (currentProfile.prompts[i]) {
+                    blocks.push(
+                        <PromptBlock
+                            key={`prompt-${i}`}
+                            prompt={currentProfile.prompts[i]}
+                            onLike={handleLike}
+                        />
+                    );
+                }
             }
         }
         return blocks;
@@ -70,13 +107,8 @@ export default function ProfileFeed({ profiles }: ProfileFeedProps) {
                         <BadgeCheck className="w-5 h-5 text-[var(--accent)]" />
                     )}
                 </div>
-                <button className="p-2 rounded-full hover:bg-[var(--border)] transition-colors">
-                    <MoreHorizontal className="w-5 h-5 text-[var(--foreground)]" />
-                </button>
+                <Menu profiles={profiles} onSelect={(index) => setCurrentIndex(index)} />
             </header>
-
-            {/* Menu */}
-            <Menu profiles={profiles} onSelect={(index) => setCurrentIndex(index)} />
 
             {/* Scrollable Content */}
             <AnimatePresence mode="wait">

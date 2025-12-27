@@ -29,17 +29,21 @@ export const portfolioData: CardData[] = [
     {
         id: '1',
         type: 'about',
-        name: 'Your Name',
+        name: 'Daniel Hai',
         verified: false,
         images: ['/images/placeholder.png'],
         prompts: [
             {
-                question: 'I geek out on',
-                answer: 'Add your interests and passions here.',
+                question: 'I am an',
+                answer: 'Electrical Engineering student at the University of British Columbia.',
             },
             {
                 question: 'My ideal weekend',
                 answer: 'Describe your perfect weekend.',
+            },
+            {
+                question: 'What makes me unique',
+                answer: 'Share what sets you apart and what you\'re passionate about.',
             },
         ],
         infoPills: [
@@ -86,7 +90,7 @@ export const portfolioData: CardData[] = [
                 answer: 'Explain the main challenge or goal of this project.',
             },
         ],
-        
+
         infoPills: [
             { label: 'Next.js' },
             { label: 'PostgreSQL' },

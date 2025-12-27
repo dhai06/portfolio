@@ -17,7 +17,7 @@ export default function Menu({ profiles, onSelect }: MenuProps) {
         <>
             <button
                 onClick={() => setIsOpen(true)}
-                className="fixed top-3 right-14 z-50 p-2 rounded-full hover:bg-[var(--border)] transition-colors"
+                className="p-2 rounded-full hover:bg-[var(--border)] transition-colors"
                 aria-label="Open Menu"
             >
                 <MenuIcon className="text-[var(--foreground)] w-5 h-5" />

@@ -180,8 +180,6 @@ portfolio/
 ## 🛠️ Common Customizations
 
 ### Add a New Project
-1. Open `src/data/portfolioData.ts`
-2. Add new object to array:
 ```typescript
 {
   id: '4',
@@ -198,6 +196,36 @@ portfolio/
     github: 'https://github.com/...',
     demo: 'https://myapp.com'
   }
+}
+```
+
+### 📸 Adding Multiple Photos & Text Blocks
+To add multiple photos and text blocks to a single project, simply add more items to the `images` and `prompts` arrays in `src/data/portfolioData.ts`.
+
+**How they appear:**
+The project feed **interleaves** them in order. If you have 3 photos and 2 prompts, it will show:
+1. Photo 1
+2. Prompt 1
+3. Photo 2
+4. Prompt 2
+5. Photo 3
+
+**Example:**
+```typescript
+{
+  id: 'project-id',
+  type: 'project',
+  name: 'My Big Project',
+  images: [
+    '/images/photo1.png', 
+    '/images/photo2.png', 
+    '/images/photo3.png'
+  ],
+  prompts: [
+    { question: 'The Mission', answer: 'To build something great.' },
+    { question: 'The Result', answer: 'It was successful!' }
+  ],
+  // ... other fields
 }
 ```
 
