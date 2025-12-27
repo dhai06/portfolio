@@ -8,7 +8,7 @@ interface InfoPillsBlockProps {
 
 export default function InfoPillsBlock({ pills }: InfoPillsBlockProps) {
     return (
-        <div className="bg-white p-6 border border-[var(--border)] rounded-xl my-2">
+        <div className="bg-white p-8 rounded-3xl my-2 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
             <div className="flex flex-wrap gap-2">
                 {pills.map((pill, index) => (
                     <span

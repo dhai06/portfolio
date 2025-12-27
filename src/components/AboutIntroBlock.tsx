@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { Heart, MapPin, Sparkles, Clock, Music2 } from 'lucide-react';
+import { Heart, MapPin, Sparkles, Clock, Music2, Sun, Cloud, CloudRain, CloudSnow, CloudLightning, Moon, CloudMoon } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import TypewriterText from './TypewriterText';
@@ -121,6 +121,9 @@ export default function AboutIntroBlock({ imageSrc, imageAlt, onLike }: AboutInt
     } | null>(null);
     const [spotifyLoading, setSpotifyLoading] = useState(true);
 
+    // Weather state
+    const [weather, setWeather] = useState<{ condition: string; isDay: boolean }>({ condition: 'clear', isDay: true });
+
     // Fetch Spotify data
     useEffect(() => {
         const fetchSpotify = async () => {
@@ -142,6 +145,48 @@ export default function AboutIntroBlock({ imageSrc, imageAlt, onLike }: AboutInt
         return () => clearInterval(interval);
     }, []);
 
+    // Fetch weather data
+    useEffect(() => {
+        const fetchWeather = async () => {
+            try {
+                const response = await fetch('/api/weather');
+                const data = await response.json();
+                setWeather({
+                    condition: data.condition || 'clear',
+                    isDay: data.isDay !== undefined ? data.isDay : true
+                });
+            } catch (error) {
+                console.error('Failed to fetch weather:', error);
+            }
+        };
+
+        fetchWeather();
+        // Refresh every 10 minutes
+        const interval = setInterval(fetchWeather, 600000);
+        return () => clearInterval(interval);
+    }, []);
+
+    // Get weather icon component
+    const getWeatherIcon = () => {
+        const { condition, isDay } = weather;
+
+        switch (condition) {
+            case 'rainy':
+                return <CloudRain className="w-5 h-5" />;
+            case 'snowy':
+                return <CloudSnow className="w-5 h-5" />;
+            case 'stormy':
+                return <CloudLightning className="w-5 h-5" />;
+            case 'cloudy':
+                return <Cloud className="w-5 h-5" />;
+            case 'partly-cloudy':
+                return isDay ? <Cloud className="w-5 h-5" /> : <CloudMoon className="w-5 h-5" />;
+            case 'clear':
+            default:
+                return isDay ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />;
+        }
+    };
+
     return (
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6 w-full">
             {/* Image Block - 2 columns, portrait aspect ratio */}
@@ -157,19 +202,16 @@ export default function AboutIntroBlock({ imageSrc, imageAlt, onLike }: AboutInt
 
             {/* Content Block - 3 columns */}
             <div className="md:col-span-3 relative bg-white rounded-[2rem] p-6 md:p-8 flex flex-col shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden">
-                {/* Background blur orb for depth */}
-                <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-br from-blue-100/60 to-purple-100/40 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none" />
-
                 {/* Two-column layout for desktop */}
                 <div className="relative z-10 flex flex-col md:flex-row gap-6 flex-1">
                     {/* Left Side - Main Content (~65%) */}
-                    <div className="flex-1 md:w-[65%] h-full flex flex-col justify-between">
+                    <div className="flex-1 md:w-[65%] h-full flex flex-col justify-between gap-6">
                         {/* Greeting - Large heading */}
                         <div className="">
-                            <h2 className="text-3xl md:text-4xl font-serif font-semibold text-[var(--foreground)] leading-tight mb-2">
+                            <h2 className="text-3xl md:text-4xl font-serif font-semibold text-[var(--foreground)] leading-tight mb-2 break-words w-full">
                                 <TypewriterText text="Hi, I'm Daniel" />
                             </h2>
-                            <p className="text-base text-[var(--foreground)]/60">
+                            <p className="text-base text-[var(--foreground)]/60 break-words w-full">
                                 Electrical Engineering Student & Developer
                             </p>
                         </div>
@@ -177,43 +219,43 @@ export default function AboutIntroBlock({ imageSrc, imageAlt, onLike }: AboutInt
                         {/* Education & Experience Pills */}
                         <div className="flex flex-wrap gap-3">
                             {/* UBC Pill */}
-                            <div className="flex-1 flex items-center gap-3 bg-gray-100 px-4 py-3 rounded-xl">
+                            <div className="w-full sm:flex-1 min-w-0 flex items-center gap-3 bg-gray-100 px-4 py-3 rounded-xl">
                                 <img
                                     src="/images/ubc-logo.png"
                                     alt="UBC Logo"
                                     width={28}
                                     height={28}
-                                    className="object-contain"
+                                    className="object-contain flex-shrink-0"
                                 />
-                                <div className="flex flex-col">
-                                    <span className="text-sm font-semibold text-[var(--foreground)] leading-tight">Electrical Engineering</span>
-                                    <span className="text-xs text-[var(--foreground)]/60">University of British Columbia</span>
+                                <div className="flex flex-col min-w-0">
+                                    <span className="text-sm font-semibold text-[var(--foreground)] leading-tight break-words">Electrical Engineering</span>
+                                    <span className="text-xs text-[var(--foreground)]/60 break-words">University of British Columbia</span>
                                 </div>
                             </div>
 
                             {/* Formula UBC Pill */}
-                            <div className="flex-1 flex items-center gap-3 bg-gray-100 px-4 py-3 rounded-xl">
+                            <div className="w-full sm:flex-1 min-w-0 flex items-center gap-3 bg-gray-100 px-4 py-3 rounded-xl">
                                 <img
                                     src="/images/formula-ubc-logo.png"
                                     alt="Formula UBC Logo"
                                     width={28}
                                     height={28}
-                                    className="object-contain"
+                                    className="object-contain flex-shrink-0"
                                 />
-                                <div className="flex flex-col">
-                                    <span className="text-sm font-semibold text-[var(--foreground)] leading-tight">Formula UBC</span>
-                                    <span className="text-xs text-[var(--foreground)]/60">Aerodynamics</span>
+                                <div className="flex flex-col min-w-0">
+                                    <span className="text-sm font-semibold text-[var(--foreground)] leading-tight break-words">Formula UBC</span>
+                                    <span className="text-xs text-[var(--foreground)]/60 break-words">Aerodynamics</span>
                                 </div>
                             </div>
                         </div>
 
                         {/* Interests - Inline sliding pill */}
-                        <div className="flex items-center gap-2">
-                            <span className="text-base font-medium text-[var(--foreground)]/50 flex items-center gap-1">
+                        <div className="flex flex-wrap items-center gap-4 gap-y-2">
+                            <span className="text-base font-medium text-[var(--foreground)]/50 flex items-center gap-1 whitespace-normal">
                                 <Sparkles className="w-5 h-5" />
-                                Current hobbies:
+                                Interests:
                             </span>
-                            <div className="relative h-14 overflow-hidden flex items-center">
+                            <div className="relative h-12 overflow-hidden flex items-center shrink-0">
                                 <AnimatePresence mode="popLayout" initial={false}>
                                     <motion.span
                                         key={interests[currentInterestIndex].name}
@@ -234,56 +276,6 @@ export default function AboutIntroBlock({ imageSrc, imageAlt, onLike }: AboutInt
                             </div>
                         </div>
 
-                        {/* Social Links & Heart Button - pushed to bottom */}
-                        <div className="flex flex-wrap items-center gap-x-3 gap-y-4 pt-4 border-t border-gray-100">
-                            {/* Social Buttons */}
-                            <a
-                                href="https://www.linkedin.com/in/daniel-hai06"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex-shrink-0 w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-black hover:text-white transition-all duration-200"
-                                aria-label="LinkedIn"
-                            >
-                                <LinkedInIcon />
-                            </a>
-                            <a
-                                href="https://github.com/dhai06"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex-shrink-0 w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-black hover:text-white transition-all duration-200"
-                                aria-label="GitHub"
-                            >
-                                <GitHubIcon />
-                            </a>
-                            <a
-                                href="https://www.instagram.com/dan._.hai"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex-shrink-0 w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-black hover:text-white transition-all duration-200"
-                                aria-label="Instagram"
-                            >
-                                <InstagramIcon />
-                            </a>
-
-                            <div className="flex-1" />
-
-                            <span className="text-sm text-[var(--foreground)]/40 italic hidden sm:block">tap to see more →</span>
-
-                            <button
-                                onClick={handleClick}
-                                className="flex-shrink-0 w-12 h-12 rounded-full bg-white shadow-lg flex items-center justify-center border border-gray-100 hover:shadow-xl hover:bg-red-50 transition-all duration-200"
-                                aria-label="Like"
-                            >
-                                <motion.div
-                                    animate={{ scale: liked ? [1, 1.4, 1] : 1 }}
-                                    transition={{ duration: 0.35, ease: "easeOut" }}
-                                >
-                                    <Heart
-                                        className={`w-6 h-6 transition-colors duration-200 ${liked ? 'fill-red-500 text-red-500' : 'text-gray-400'}`}
-                                    />
-                                </motion.div>
-                            </button>
-                        </div>
                     </div>
 
                     {/* Right Side - Widgets (~35%) */}
@@ -292,7 +284,10 @@ export default function AboutIntroBlock({ imageSrc, imageAlt, onLike }: AboutInt
                         <div className="bg-gray-50 rounded-2xl p-4 flex-1 flex flex-col justify-center gap-2">
                             <div className="flex items-center gap-2 text-gray-600">
                                 <MapPin className="w-4 h-4" />
-                                <span className="text-sm font-medium">Vancouver, BC</span>
+                                <span className="text-sm font-medium">Raincouver, BC</span>
+                                <div className="ml-auto">
+                                    {getWeatherIcon()}
+                                </div>
                             </div>
                             <div className="flex items-center gap-2">
                                 <Clock className="w-4 h-4 text-gray-400" />
@@ -315,7 +310,7 @@ export default function AboutIntroBlock({ imageSrc, imageAlt, onLike }: AboutInt
                                 <span className="text-xs font-medium text-gray-500 uppercase tracking-wide group-hover:text-[#1DB954] transition-colors duration-200">Spotify</span>
                             </a>
 
-                            <div className="flex items-center gap-3 flex-1">
+                            <div className="flex flex-row items-center gap-3 md:flex-col md:items-start xl:flex-row xl:items-center">
                                 {/* Album art - real or placeholder */}
                                 {spotifyData?.albumImageUrl ? (
                                     <img
@@ -329,7 +324,7 @@ export default function AboutIntroBlock({ imageSrc, imageAlt, onLike }: AboutInt
                                     </div>
                                 )}
 
-                                <div className="flex-1 min-w-0">
+                                <div className="min-w-0 w-full">
                                     {spotifyLoading ? (
                                         <p className="text-sm text-gray-400">Loading...</p>
                                     ) : spotifyData?.title ? (
@@ -346,11 +341,11 @@ export default function AboutIntroBlock({ imageSrc, imageAlt, onLike }: AboutInt
                                                 rel="noopener noreferrer"
                                                 className="block hover:underline"
                                             >
-                                                <p className="text-sm font-semibold text-gray-900 truncate">
+                                                <p className="text-xs md:text-sm font-semibold text-gray-900 line-clamp-2 break-words">
                                                     {spotifyData.title}
                                                 </p>
                                             </a>
-                                            <p className="text-xs text-gray-500 truncate">{spotifyData.artist}</p>
+                                            <p className="text-[10px] md:text-xs text-gray-500 line-clamp-1">{spotifyData.artist}</p>
                                         </>
                                     ) : (
                                         <p className="text-sm text-gray-400">Not connected</p>
@@ -359,6 +354,57 @@ export default function AboutIntroBlock({ imageSrc, imageAlt, onLike }: AboutInt
                             </div>
                         </div>
                     </div>
+                </div>
+
+                {/* Social Links & Heart Button - at bottom of card */}
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-4 pt-4 mt-6 border-t border-gray-100">
+                    {/* Social Buttons */}
+                    <a
+                        href="https://www.linkedin.com/in/daniel-hai06"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-shrink-0 w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-black hover:text-white transition-all duration-200"
+                        aria-label="LinkedIn"
+                    >
+                        <LinkedInIcon />
+                    </a>
+                    <a
+                        href="https://github.com/dhai06"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-shrink-0 w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-black hover:text-white transition-all duration-200"
+                        aria-label="GitHub"
+                    >
+                        <GitHubIcon />
+                    </a>
+                    <a
+                        href="https://www.instagram.com/dan._.hai"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-shrink-0 w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-black hover:text-white transition-all duration-200"
+                        aria-label="Instagram"
+                    >
+                        <InstagramIcon />
+                    </a>
+
+                    <div className="flex-1" />
+
+                    <span className="text-sm text-[var(--foreground)]/40 italic hidden sm:block">tap to see more →</span>
+
+                    <button
+                        onClick={handleClick}
+                        className="flex-shrink-0 w-12 h-12 rounded-full bg-white shadow-lg flex items-center justify-center border border-gray-100 hover:shadow-xl hover:bg-red-50 transition-all duration-200"
+                        aria-label="Like"
+                    >
+                        <motion.div
+                            animate={{ scale: liked ? [1, 1.4, 1] : 1 }}
+                            transition={{ duration: 0.35, ease: "easeOut" }}
+                        >
+                            <Heart
+                                className={`w-6 h-6 transition-colors duration-200 ${liked ? 'fill-red-500 text-red-500' : 'text-gray-400'}`}
+                            />
+                        </motion.div>
+                    </button>
                 </div>
             </div>
         </div>
