@@ -1,11 +1,10 @@
 'use client';
 
-'use client';
-
 import { Heart } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { PromptData } from '@/data/portfolioData';
+import TypewriterText from './TypewriterText';
 
 interface PromptBlockProps {
     prompt: PromptData;
@@ -24,7 +23,7 @@ export default function PromptBlock({ prompt, onLike }: PromptBlockProps) {
         <div className="relative bg-white p-6 border-b border-[var(--border)] rounded-xl my-2">
             <p className="text-sm text-[var(--foreground)]/60 mb-2">{prompt.question}</p>
             <p className="text-xl font-serif font-semibold text-[var(--foreground)] leading-snug">
-                {prompt.answer}
+                <TypewriterText text={prompt.answer} />
             </p>
             {/* Like button */}
             <button

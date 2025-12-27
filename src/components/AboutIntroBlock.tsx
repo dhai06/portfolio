@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { Heart } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
+import TypewriterText from './TypewriterText';
 
 // Simple Icons SVG components
 const LinkedInIcon = () => (
@@ -55,7 +56,7 @@ export default function AboutIntroBlock({ imageSrc, imageAlt, onLike }: AboutInt
             <div className="relative bg-white p-6 border border-[var(--border)] rounded-xl flex flex-col justify-center">
                 {/* Greeting */}
                 <p className="text-xl font-serif font-semibold text-[var(--foreground)] leading-snug mb-6">
-                    Hi, I'm Daniel. Nice to meet you!
+                    <TypewriterText text="Hi, I'm Daniel. Nice to meet you!" />
                 </p>
 
                 {/* UBC Electrical Engineering */}

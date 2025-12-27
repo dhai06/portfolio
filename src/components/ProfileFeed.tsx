@@ -9,22 +9,69 @@ import InfoPillsBlock from './InfoPillsBlock';
 import DetailsPage from './DetailsPage';
 import Menu from './Menu';
 import AboutIntroBlock from './AboutIntroBlock';
+import TechStackBlock from './TechStackBlock';
+import SpotifyBlock from './SpotifyBlock';
 import { CardData } from '@/data/portfolioData';
 
 interface ProfileFeedProps {
     profiles: CardData[];
 }
 
+// Slide animation variants for Feature 3
+const slideVariants = {
+    enter: (direction: number) => ({
+        x: direction > 0 ? 1000 : -1000,
+        opacity: 0
+    }),
+    center: {
+        zIndex: 1,
+        x: 0,
+        opacity: 1
+    },
+    exit: (direction: number) => ({
+        zIndex: 0,
+        x: direction < 0 ? 1000 : -1000,
+        opacity: 0
+    })
+};
+
+// Stagger animation variants for Feature 4
+const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+        opacity: 1,
+        transition: {
+            staggerChildren: 0.1,
+            delayChildren: 0.1,
+        }
+    }
+};
+
+const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    show: {
+        opacity: 1,
+        y: 0,
+        transition: {
+            duration: 0.4,
+            ease: 'easeOut'
+        }
+    }
+};
+
 export default function ProfileFeed({ profiles }: ProfileFeedProps) {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [showDetails, setShowDetails] = useState(false);
+    const [direction, setDirection] = useState(0);
     const currentProfile = profiles[currentIndex];
 
     const handleNext = () => {
+        setDirection(1);
         setCurrentIndex((prev) => (prev + 1) % profiles.length);
     };
 
     const handlePrevious = () => {
+        setDirection(-1);
         setCurrentIndex((prev) => (prev - 1 + profiles.length) % profiles.length);
     };
 
@@ -46,6 +93,11 @@ export default function ProfileFeed({ profiles }: ProfileFeedProps) {
                     imageAlt={currentProfile.name}
                     onLike={handleLike}
                 />
+            );
+
+            // Add TechStack block after intro
+            blocks.push(
+                <TechStackBlock key="tech-stack" onLike={handleLike} />
             );
 
             // Continue with remaining blocks starting from index 1
@@ -70,6 +122,11 @@ export default function ProfileFeed({ profiles }: ProfileFeedProps) {
                     );
                 }
             }
+
+            // Add Spotify block at the end for about page
+            blocks.push(
+                <SpotifyBlock key="spotify" onLike={handleLike} />
+            );
         } else {
             // For other profile types, use normal interleaving
             for (let i = 0; i < maxLen; i++) {
@@ -110,18 +167,37 @@ export default function ProfileFeed({ profiles }: ProfileFeedProps) {
                 <Menu profiles={profiles} onSelect={(index) => setCurrentIndex(index)} />
             </header>
 
-            {/* Scrollable Content */}
-            <AnimatePresence mode="wait">
+            {/* Scrollable Content with Slide Animation */}
+            <AnimatePresence mode="popLayout" custom={direction}>
                 <motion.main
                     key={currentProfile.id}
-                    className="pb-24 px-4 py-4 space-y-4"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    transition={{ duration: 0.3 }}
+                    custom={direction}
+                    variants={slideVariants}
+                    initial="enter"
+                    animate="center"
+                    exit="exit"
+                    transition={{
+                        x: { type: 'spring', stiffness: 300, damping: 30 },
+                        opacity: { duration: 0.2 }
+                    }}
+                    className="pb-24 px-4 py-4"
                 >
-                    {renderBlocks()}
-                    <InfoPillsBlock pills={currentProfile.infoPills} />
+                    {/* Staggered blocks container */}
+                    <motion.div
+                        variants={containerVariants}
+                        initial="hidden"
+                        animate="show"
+                        className="space-y-4"
+                    >
+                        {renderBlocks().map((block, index) => (
+                            <motion.div key={index} variants={itemVariants}>
+                                {block}
+                            </motion.div>
+                        ))}
+                        <motion.div variants={itemVariants}>
+                            <InfoPillsBlock pills={currentProfile.infoPills} />
+                        </motion.div>
+                    </motion.div>
                 </motion.main>
             </AnimatePresence>
 
