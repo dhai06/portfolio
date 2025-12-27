@@ -62,8 +62,8 @@ function AboutDetails({ profile }: { profile: CardData }) {
                 </div>
             </div>
 
-            {/* Bio Section */}
-            {profile.prompts.map((prompt, index) => (
+            {/* Bio Section - using detailsContent.prompts */}
+            {profile.detailsContent.prompts?.map((prompt, index) => (
                 <div key={index} className="bg-white p-6 rounded-2xl border border-[var(--border)] mb-4">
                     <p className="text-sm font-semibold text-[var(--foreground)]/60 mb-2">{prompt.question}</p>
                     <p className="text-lg text-[var(--foreground)] leading-relaxed">
@@ -75,7 +75,7 @@ function AboutDetails({ profile }: { profile: CardData }) {
             {/* Skills */}
             {profile.details.stack && (
                 <div className="bg-white p-6 rounded-2xl border border-[var(--border)] mb-4">
-                    <h3 className="text-sm font-bold uppercase tracking-widest text-[var(--foreground)]/60 mb-3">
+                    <h3 className="text-xs font-bold uppercase tracking-widest text-[var(--foreground)]/50 mb-3">
                         Skills & Technologies
                     </h3>
                     <div className="flex flex-wrap gap-2">
@@ -91,22 +91,24 @@ function AboutDetails({ profile }: { profile: CardData }) {
                 </div>
             )}
 
-            {/* All Info Pills */}
-            <div className="bg-white p-6 rounded-2xl border border-[var(--border)]">
-                <h3 className="text-sm font-bold uppercase tracking-widest text-[var(--foreground)]/60 mb-3">
-                    About Me
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                    {profile.infoPills.map((pill, index) => (
-                        <span
-                            key={index}
-                            className="px-4 py-2 bg-[var(--background)] rounded-full text-sm text-[var(--foreground)] border border-[var(--border)]"
-                        >
-                            {pill.label}
-                        </span>
-                    ))}
+            {/* All Info Pills - using detailsContent.infoPills */}
+            {profile.detailsContent.infoPills && profile.detailsContent.infoPills.length > 0 && (
+                <div className="bg-white p-6 rounded-2xl border border-[var(--border)]">
+                    <h3 className="text-xs font-bold uppercase tracking-widest text-[var(--foreground)]/50 mb-3">
+                        About Me
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                        {profile.detailsContent.infoPills.map((pill, index) => (
+                            <span
+                                key={index}
+                                className="px-4 py-2 bg-[var(--background)] rounded-full text-sm text-[var(--foreground)] border border-[var(--border)]"
+                            >
+                                {pill.label}
+                            </span>
+                        ))}
+                    </div>
                 </div>
-            </div>
+            )}
         </div>
     );
 }
@@ -130,8 +132,8 @@ function ProjectDetails({ profile }: { profile: CardData }) {
                 </div>
             )}
 
-            {/* Project Description */}
-            {profile.prompts.map((prompt, index) => (
+            {/* Project Description - using detailsContent.prompts */}
+            {profile.detailsContent.prompts?.map((prompt, index) => (
                 <div key={index} className="bg-white p-8 rounded-2xl border border-[var(--border)] mb-4">
                     <h2 className="text-2xl font-serif font-bold text-[var(--foreground)] mb-3">{prompt.question}</h2>
                     <p className="text-lg text-[var(--foreground)] leading-relaxed">
@@ -200,8 +202,8 @@ function ContactDetails({ profile }: { profile: CardData }) {
                 {profile.name}
             </h1>
 
-            {/* Contact Prompts */}
-            {profile.prompts.map((prompt, index) => (
+            {/* Contact Prompts - using detailsContent.prompts */}
+            {profile.detailsContent.prompts?.map((prompt, index) => (
                 <div key={index} className="bg-white p-8 rounded-2xl border border-[var(--border)] mb-6 text-left">
                     <p className="text-sm font-semibold text-[var(--foreground)]/60 mb-2">{prompt.question}</p>
                     <p className="text-xl font-serif text-[var(--foreground)] leading-relaxed">
@@ -241,17 +243,19 @@ function ContactDetails({ profile }: { profile: CardData }) {
                 </div>
             </div>
 
-            {/* Availability Tags */}
-            <div className="flex flex-wrap gap-2 justify-center">
-                {profile.infoPills.map((pill, index) => (
-                    <span
-                        key={index}
-                        className="px-4 py-2 bg-white rounded-full text-sm text-[var(--foreground)] border border-[var(--border)] font-medium"
-                    >
-                        {pill.label}
-                    </span>
-                ))}
-            </div>
+            {/* Availability Tags - using detailsContent.infoPills */}
+            {profile.detailsContent.infoPills && profile.detailsContent.infoPills.length > 0 && (
+                <div className="flex flex-wrap gap-2 justify-center">
+                    {profile.detailsContent.infoPills.map((pill, index) => (
+                        <span
+                            key={index}
+                            className="px-4 py-2 bg-white rounded-full text-sm text-[var(--foreground)] border border-[var(--border)] font-medium"
+                        >
+                            {pill.label}
+                        </span>
+                    ))}
+                </div>
+            )}
         </div>
     );
 }

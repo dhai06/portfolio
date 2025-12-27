@@ -208,11 +208,11 @@ export default function AboutIntroBlock({ imageSrc, imageAlt, onLike }: AboutInt
                     <div className="flex-1 md:w-[65%] h-full flex flex-col justify-between gap-6">
                         {/* Greeting - Large heading */}
                         <div className="">
-                            <h2 className="text-3xl md:text-4xl font-serif font-semibold text-[var(--foreground)] leading-tight mb-2 break-words w-full">
+                            <h2 className="text-3xl md:text-4xl font-serif font-bold text-[var(--foreground)] leading-tight mb-2 break-words w-full">
                                 <TypewriterText text="Hi, I'm Daniel" />
                             </h2>
-                            <p className="text-base text-[var(--foreground)]/60 break-words w-full">
-                                Electrical Engineering Student & Developer
+                            <p className="text-base text-[var(--foreground)]/60 leading-relaxed break-words w-full">
+                                Electrical Engineering Student 
                             </p>
                         </div>
 

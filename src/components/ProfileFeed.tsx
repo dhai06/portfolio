@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, BadgeCheck } from 'lucide-react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion, useInView } from 'framer-motion';
 import PhotoBlock from './PhotoBlock';
 import PromptBlock from './PromptBlock';
 import InfoPillsBlock from './InfoPillsBlock';
@@ -10,6 +10,8 @@ import DetailsPage from './DetailsPage';
 import Menu from './Menu';
 import AboutIntroBlock from './AboutIntroBlock';
 import { CardData } from '@/data/portfolioData';
+import React, { useRef } from 'react';
+import { BlockVisibleProvider } from './BlockVisibleContext';
 
 interface ProfileFeedProps {
     profiles: CardData[];
@@ -59,12 +61,57 @@ const itemVariants = {
     }
 };
 
+// Sequential animation block component
+interface SequentialBlockProps {
+    children: React.ReactNode;
+    canAnimate: boolean;
+    onComplete: () => void;
+}
+
+function SequentialBlock({ children, canAnimate, onComplete }: SequentialBlockProps) {
+    const ref = useRef<HTMLDivElement>(null);
+    const isInView = useInView(ref, { once: true, margin: "-50px" });
+    const [hasAnimated, setHasAnimated] = useState(false);
+
+    // Only animate if in view AND previous block has completed
+    const shouldAnimate = isInView && canAnimate && !hasAnimated;
+
+    return (
+        <motion.div
+            ref={ref}
+            initial={{ opacity: 0, y: 60, scale: 0.95 }}
+            animate={shouldAnimate || hasAnimated ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 60, scale: 0.95 }}
+            transition={{
+                type: "spring",
+                stiffness: 100,
+                damping: 20,
+            }}
+            onAnimationComplete={() => {
+                if (shouldAnimate && !hasAnimated) {
+                    setHasAnimated(true);
+                    onComplete();
+                }
+            }}
+        >
+            <BlockVisibleProvider isVisible={hasAnimated}>
+                {children}
+            </BlockVisibleProvider>
+        </motion.div>
+    );
+}
+
 export default function ProfileFeed({ profiles }: ProfileFeedProps) {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [showDetails, setShowDetails] = useState(false);
     const [direction, setDirection] = useState(0);
     const [isInitialMount, setIsInitialMount] = useState(true);
+    const [animatedBlocks, setAnimatedBlocks] = useState<Set<number>>(new Set([0])); // Start with first block ready
     const currentProfile = profiles[currentIndex];
+
+    // Reset animated blocks when profile changes
+    useEffect(() => {
+        setAnimatedBlocks(new Set([0]));
+    }, [currentIndex]);
 
     const handleNext = () => {
         setIsInitialMount(false);
@@ -178,36 +225,29 @@ export default function ProfileFeed({ profiles }: ProfileFeedProps) {
                     }}
                     className="pb-24 px-4 py-4"
                 >
-                    {/* Blocks animate individually with staggered delays */}
+                    {/* Blocks animate sequentially - each waits for previous to complete */}
                     <div className="space-y-4">
-                        {renderBlocks().map((block, index) => (
-                            <motion.div
-                                key={`${currentProfile.id}-${index}`}
-                                initial={{ opacity: 0, y: 60, scale: 0.95 }}
-                                animate={{ opacity: 1, y: 0, scale: 1 }}
-                                transition={{
-                                    type: "spring",
-                                    stiffness: 100,
-                                    damping: 20,
-                                    delay: index * 0.15
-                                }}
-                            >
-                                {block}
-                            </motion.div>
-                        ))}
-                        <motion.div
+                        {renderBlocks().map((block, index) => {
+                            const canAnimate = animatedBlocks.has(index);
+                            return (
+                                <SequentialBlock
+                                    key={`${currentProfile.id}-${index}`}
+                                    canAnimate={canAnimate}
+                                    onComplete={() => {
+                                        setAnimatedBlocks(prev => new Set([...prev, index + 1]));
+                                    }}
+                                >
+                                    {block}
+                                </SequentialBlock>
+                            );
+                        })}
+                        <SequentialBlock
                             key={`${currentProfile.id}-pills`}
-                            initial={{ opacity: 0, y: 60, scale: 0.95 }}
-                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                            transition={{
-                                type: "spring",
-                                stiffness: 100,
-                                damping: 20,
-                                delay: renderBlocks().length * 0.15
-                            }}
+                            canAnimate={animatedBlocks.has(renderBlocks().length)}
+                            onComplete={() => { }}
                         >
                             <InfoPillsBlock pills={currentProfile.infoPills} />
-                        </motion.div>
+                        </SequentialBlock>
                     </div>
                 </motion.main>
             </AnimatePresence>
