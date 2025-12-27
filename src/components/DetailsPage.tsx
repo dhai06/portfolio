@@ -64,7 +64,7 @@ function AboutDetails({ profile }: { profile: CardData }) {
 
             {/* Bio Section */}
             {profile.prompts.map((prompt, index) => (
-                <div key={index} className="bg-white p-6 rounded-xl border border-[var(--border)] mb-4">
+                <div key={index} className="bg-white p-6 rounded-2xl border border-[var(--border)] mb-4">
                     <p className="text-sm font-semibold text-[var(--foreground)]/60 mb-2">{prompt.question}</p>
                     <p className="text-lg text-[var(--foreground)] leading-relaxed">
                         {prompt.answer}
@@ -74,7 +74,7 @@ function AboutDetails({ profile }: { profile: CardData }) {
 
             {/* Skills */}
             {profile.details.stack && (
-                <div className="bg-white p-6 rounded-xl border border-[var(--border)] mb-4">
+                <div className="bg-white p-6 rounded-2xl border border-[var(--border)] mb-4">
                     <h3 className="text-sm font-bold uppercase tracking-widest text-[var(--foreground)]/60 mb-3">
                         Skills & Technologies
                     </h3>
@@ -92,7 +92,7 @@ function AboutDetails({ profile }: { profile: CardData }) {
             )}
 
             {/* All Info Pills */}
-            <div className="bg-white p-6 rounded-xl border border-[var(--border)]">
+            <div className="bg-white p-6 rounded-2xl border border-[var(--border)]">
                 <h3 className="text-sm font-bold uppercase tracking-widest text-[var(--foreground)]/60 mb-3">
                     About Me
                 </h3>
@@ -123,7 +123,7 @@ function ProjectDetails({ profile }: { profile: CardData }) {
             {profile.images.length > 0 && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                     {profile.images.map((img, index) => (
-                        <div key={index} className="relative aspect-[4/3] rounded-xl overflow-hidden border border-[var(--border)]">
+                        <div key={index} className="relative aspect-[4/3] rounded-2xl overflow-hidden border border-[var(--border)]">
                             <Image src={img} alt={`${profile.name} screenshot ${index + 1}`} fill className="object-cover" />
                         </div>
                     ))}
@@ -132,7 +132,7 @@ function ProjectDetails({ profile }: { profile: CardData }) {
 
             {/* Project Description */}
             {profile.prompts.map((prompt, index) => (
-                <div key={index} className="bg-white p-8 rounded-xl border border-[var(--border)] mb-4">
+                <div key={index} className="bg-white p-8 rounded-2xl border border-[var(--border)] mb-4">
                     <h2 className="text-2xl font-serif font-bold text-[var(--foreground)] mb-3">{prompt.question}</h2>
                     <p className="text-lg text-[var(--foreground)] leading-relaxed">
                         {prompt.answer}
@@ -142,7 +142,7 @@ function ProjectDetails({ profile }: { profile: CardData }) {
 
             {/* Tech Stack */}
             {profile.details.stack && (
-                <div className="bg-[var(--foreground)] text-white p-8 rounded-xl mb-4">
+                <div className="bg-[var(--foreground)] text-white p-8 rounded-2xl mb-4">
                     <h3 className="text-sm font-bold uppercase tracking-widest mb-4 opacity-80">
                         Built With
                     </h3>
@@ -202,7 +202,7 @@ function ContactDetails({ profile }: { profile: CardData }) {
 
             {/* Contact Prompts */}
             {profile.prompts.map((prompt, index) => (
-                <div key={index} className="bg-white p-8 rounded-xl border border-[var(--border)] mb-6 text-left">
+                <div key={index} className="bg-white p-8 rounded-2xl border border-[var(--border)] mb-6 text-left">
                     <p className="text-sm font-semibold text-[var(--foreground)]/60 mb-2">{prompt.question}</p>
                     <p className="text-xl font-serif text-[var(--foreground)] leading-relaxed">
                         {prompt.answer}
@@ -211,7 +211,7 @@ function ContactDetails({ profile }: { profile: CardData }) {
             ))}
 
             {/* Contact Methods */}
-            <div className="bg-[var(--foreground)] text-white p-8 rounded-xl mb-6">
+            <div className="bg-[var(--foreground)] text-white p-8 rounded-2xl mb-6">
                 <h3 className="text-sm font-bold uppercase tracking-widest mb-6 opacity-80">
                     Get In Touch
                 </h3>

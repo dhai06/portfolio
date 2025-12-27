@@ -35,7 +35,7 @@ export default function Menu({ profiles, onSelect }: MenuProps) {
                             onClick={() => setIsOpen(false)}
                             className="absolute top-4 right-4 p-3 rounded-full hover:bg-[var(--border)] transition-colors"
                         >
-                            <X className="text-[var(--foreground)] w-6 h-6" />
+                            <X className="text-[var(--foreground)] w-5 h-5" />
                         </button>
 
                         <nav className="flex flex-col gap-6 text-center">

@@ -9,8 +9,6 @@ import InfoPillsBlock from './InfoPillsBlock';
 import DetailsPage from './DetailsPage';
 import Menu from './Menu';
 import AboutIntroBlock from './AboutIntroBlock';
-import TechStackBlock from './TechStackBlock';
-import SpotifyBlock from './SpotifyBlock';
 import { CardData } from '@/data/portfolioData';
 
 interface ProfileFeedProps {
@@ -48,13 +46,15 @@ const containerVariants = {
 };
 
 const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 0, y: 50, scale: 0.9 },
     show: {
         opacity: 1,
         y: 0,
+        scale: 1,
         transition: {
-            duration: 0.4,
-            ease: 'easeOut'
+            type: "spring" as const,
+            bounce: 0.4,
+            duration: 0.8
         }
     }
 };
@@ -63,14 +63,17 @@ export default function ProfileFeed({ profiles }: ProfileFeedProps) {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [showDetails, setShowDetails] = useState(false);
     const [direction, setDirection] = useState(0);
+    const [isInitialMount, setIsInitialMount] = useState(true);
     const currentProfile = profiles[currentIndex];
 
     const handleNext = () => {
+        setIsInitialMount(false);
         setDirection(1);
         setCurrentIndex((prev) => (prev + 1) % profiles.length);
     };
 
     const handlePrevious = () => {
+        setIsInitialMount(false);
         setDirection(-1);
         setCurrentIndex((prev) => (prev - 1 + profiles.length) % profiles.length);
     };
@@ -95,11 +98,6 @@ export default function ProfileFeed({ profiles }: ProfileFeedProps) {
                 />
             );
 
-            // Add TechStack block after intro
-            blocks.push(
-                <TechStackBlock key="tech-stack" onLike={handleLike} />
-            );
-
             // Continue with remaining blocks starting from index 1
             for (let i = 1; i < maxLen; i++) {
                 if (currentProfile.images[i]) {
@@ -122,11 +120,6 @@ export default function ProfileFeed({ profiles }: ProfileFeedProps) {
                     );
                 }
             }
-
-            // Add Spotify block at the end for about page
-            blocks.push(
-                <SpotifyBlock key="spotify" onLike={handleLike} />
-            );
         } else {
             // For other profile types, use normal interleaving
             for (let i = 0; i < maxLen; i++) {
@@ -159,12 +152,15 @@ export default function ProfileFeed({ profiles }: ProfileFeedProps) {
             {/* Sticky Header */}
             <header className="sticky top-0 z-50 bg-[var(--background)] border-b border-[var(--border)] px-4 py-3 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                    <h1 className="text-lg font-semibold text-[var(--foreground)]">{currentProfile.name}</h1>
+                    <h1 className="text-lg font-medium text-[var(--foreground)]">{currentProfile.name}</h1>
                     {currentProfile.verified && (
                         <BadgeCheck className="w-5 h-5 text-[var(--accent)]" />
                     )}
                 </div>
-                <Menu profiles={profiles} onSelect={(index) => setCurrentIndex(index)} />
+                <Menu profiles={profiles} onSelect={(index) => {
+                    setIsInitialMount(false);
+                    setCurrentIndex(index);
+                }} />
             </header>
 
             {/* Scrollable Content with Slide Animation */}
@@ -173,7 +169,7 @@ export default function ProfileFeed({ profiles }: ProfileFeedProps) {
                     key={currentProfile.id}
                     custom={direction}
                     variants={slideVariants}
-                    initial="enter"
+                    initial={isInitialMount ? { opacity: 1, x: 0 } : "enter"}
                     animate="center"
                     exit="exit"
                     transition={{
@@ -182,22 +178,37 @@ export default function ProfileFeed({ profiles }: ProfileFeedProps) {
                     }}
                     className="pb-24 px-4 py-4"
                 >
-                    {/* Staggered blocks container */}
-                    <motion.div
-                        variants={containerVariants}
-                        initial="hidden"
-                        animate="show"
-                        className="space-y-4"
-                    >
+                    {/* Blocks animate individually with staggered delays */}
+                    <div className="space-y-4">
                         {renderBlocks().map((block, index) => (
-                            <motion.div key={index} variants={itemVariants}>
+                            <motion.div
+                                key={`${currentProfile.id}-${index}`}
+                                initial={{ opacity: 0, y: 60, scale: 0.95 }}
+                                animate={{ opacity: 1, y: 0, scale: 1 }}
+                                transition={{
+                                    type: "spring",
+                                    stiffness: 100,
+                                    damping: 20,
+                                    delay: index * 0.15
+                                }}
+                            >
                                 {block}
                             </motion.div>
                         ))}
-                        <motion.div variants={itemVariants}>
+                        <motion.div
+                            key={`${currentProfile.id}-pills`}
+                            initial={{ opacity: 0, y: 60, scale: 0.95 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            transition={{
+                                type: "spring",
+                                stiffness: 100,
+                                damping: 20,
+                                delay: renderBlocks().length * 0.15
+                            }}
+                        >
                             <InfoPillsBlock pills={currentProfile.infoPills} />
                         </motion.div>
-                    </motion.div>
+                    </div>
                 </motion.main>
             </AnimatePresence>
 

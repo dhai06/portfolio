@@ -20,23 +20,23 @@ export default function PromptBlock({ prompt, onLike }: PromptBlockProps) {
     };
 
     return (
-        <div className="relative bg-white p-6 border-b border-[var(--border)] rounded-xl my-2">
-            <p className="text-sm text-[var(--foreground)]/60 mb-2">{prompt.question}</p>
-            <p className="text-xl font-serif font-semibold text-[var(--foreground)] leading-snug">
+        <div className="relative bg-white p-8 rounded-3xl my-2 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+            <p className="text-xs uppercase font-bold tracking-widest text-[var(--foreground)]/50 mb-3">{prompt.question}</p>
+            <p className="text-3xl font-serif font-bold text-[var(--foreground)] leading-tight">
                 <TypewriterText text={prompt.answer} />
             </p>
             {/* Like button */}
             <button
                 onClick={handleClick}
-                className="absolute bottom-4 right-4 w-10 h-10 rounded-full bg-[var(--background)] shadow-md flex items-center justify-center border border-[var(--border)] hover:scale-105 transition-transform"
+                className="absolute bottom-6 right-6 w-12 h-12 rounded-full bg-white shadow-lg flex items-center justify-center border border-gray-100 hover:shadow-xl transition-shadow"
                 aria-label="Like"
             >
                 <motion.div
-                    animate={{ scale: liked ? [1, 1.3, 1] : 1 }}
-                    transition={{ duration: 0.3 }}
+                    animate={{ scale: liked ? [1, 1.4, 1] : 1 }}
+                    transition={{ duration: 0.35, ease: "easeOut" }}
                 >
                     <Heart
-                        className={`w-5 h-5 ${liked ? 'fill-red-500 text-red-500' : 'text-[var(--foreground)]'}`}
+                        className={`w-6 h-6 transition-colors duration-200 ${liked ? 'fill-red-500 text-red-500' : 'text-gray-400'}`}
                     />
                 </motion.div>
             </button>
