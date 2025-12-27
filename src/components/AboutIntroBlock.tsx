@@ -25,6 +25,12 @@ const InstagramIcon = () => (
     </svg>
 );
 
+const SpotifyIcon = () => (
+    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z" />
+    </svg>
+);
+
 // Animated Equalizer Component
 const AnimatedEqualizer = ({ isPlaying }: { isPlaying: boolean }) => {
     const bars = [0, 1, 2, 3];
@@ -60,6 +66,8 @@ export default function AboutIntroBlock({ imageSrc, imageAlt, onLike }: AboutInt
     const [liked, setLiked] = useState(false);
     const [currentTime, setCurrentTime] = useState<string>('');
 
+    const [currentInterestIndex, setCurrentInterestIndex] = useState(0);
+
     const handleClick = () => {
         setLiked(!liked);
         onLike?.();
@@ -67,16 +75,15 @@ export default function AboutIntroBlock({ imageSrc, imageAlt, onLike }: AboutInt
 
     const interests = [
         { name: 'Formula 1', emoji: '🏎️' },
-        { name: 'Aviation', emoji: '✈️' },
-        { name: 'Guitars', emoji: '🎸' },
-        { name: 'Fitness', emoji: '🏋️' },
-        { name: 'Travel', emoji: '🌎' },
-        { name: 'Photography', emoji: '📸' },
         { name: 'Cooking', emoji: '🍳' },
-        { name: 'Tennis', emoji: '🎾' }
+        { name: 'Fashion', emoji: '👕' },
+        { name: 'Working Out', emoji: '🏋️' },
+        { name: 'Playing Piano', emoji: '🎹' },
+        { name: 'Discovering Restaurants', emoji: '🍽️' },
+        { name: 'Mechanical Keyboards', emoji: '⌨️' },
+        { name: 'Watching TV Shows', emoji: '📺' },
+        { name: 'Random Projects', emoji: '🛠️' }
     ];
-
-    const [currentInterestIndex, setCurrentInterestIndex] = useState(0);
 
     // Update time every minute (Vancouver PST)
     useEffect(() => {
@@ -156,9 +163,9 @@ export default function AboutIntroBlock({ imageSrc, imageAlt, onLike }: AboutInt
                 {/* Two-column layout for desktop */}
                 <div className="relative z-10 flex flex-col md:flex-row gap-6 flex-1">
                     {/* Left Side - Main Content (~65%) */}
-                    <div className="flex-1 md:w-[65%] flex flex-col">
+                    <div className="flex-1 md:w-[65%] h-full flex flex-col justify-between">
                         {/* Greeting - Large heading */}
-                        <div className="mb-4">
+                        <div className="">
                             <h2 className="text-3xl md:text-4xl font-serif font-semibold text-[var(--foreground)] leading-tight mb-2">
                                 <TypewriterText text="Hi, I'm Daniel" />
                             </h2>
@@ -168,9 +175,9 @@ export default function AboutIntroBlock({ imageSrc, imageAlt, onLike }: AboutInt
                         </div>
 
                         {/* Education & Experience Pills */}
-                        <div className="flex flex-wrap gap-3 mb-4">
+                        <div className="flex flex-wrap gap-3">
                             {/* UBC Pill */}
-                            <div className="flex items-center gap-3 bg-gray-100 px-4 py-3 rounded-xl">
+                            <div className="flex-1 flex items-center gap-3 bg-gray-100 px-4 py-3 rounded-xl">
                                 <img
                                     src="/images/ubc-logo.png"
                                     alt="UBC Logo"
@@ -185,7 +192,7 @@ export default function AboutIntroBlock({ imageSrc, imageAlt, onLike }: AboutInt
                             </div>
 
                             {/* Formula UBC Pill */}
-                            <div className="flex items-center gap-3 bg-gray-100 px-4 py-3 rounded-xl">
+                            <div className="flex-1 flex items-center gap-3 bg-gray-100 px-4 py-3 rounded-xl">
                                 <img
                                     src="/images/formula-ubc-logo.png"
                                     alt="Formula UBC Logo"
@@ -201,16 +208,16 @@ export default function AboutIntroBlock({ imageSrc, imageAlt, onLike }: AboutInt
                         </div>
 
                         {/* Interests - Inline sliding pill */}
-                        <div className="flex items-center gap-2 mb-4">
-                            <span className="text-sm text-[var(--foreground)]/50 flex items-center gap-1">
-                                <Sparkles className="w-4 h-4" />
-                                Currently into:
+                        <div className="flex items-center gap-2">
+                            <span className="text-base font-medium text-[var(--foreground)]/50 flex items-center gap-1">
+                                <Sparkles className="w-5 h-5" />
+                                Current hobbies:
                             </span>
-                            <div className="relative h-7 overflow-hidden flex items-center">
+                            <div className="relative h-14 overflow-hidden flex items-center">
                                 <AnimatePresence mode="popLayout" initial={false}>
                                     <motion.span
                                         key={interests[currentInterestIndex].name}
-                                        className="inline-flex items-center gap-1.5 bg-gray-100 px-3 py-1 rounded-full text-sm font-medium text-[var(--foreground)]"
+                                        className="inline-flex items-center gap-1.5 bg-gray-100 px-4 py-2 rounded-full text-base font-medium text-[var(--foreground)]"
                                         initial={{ y: 20, opacity: 0 }}
                                         animate={{ y: 0, opacity: 1 }}
                                         exit={{ y: -20, opacity: 0 }}
@@ -228,13 +235,13 @@ export default function AboutIntroBlock({ imageSrc, imageAlt, onLike }: AboutInt
                         </div>
 
                         {/* Social Links & Heart Button - pushed to bottom */}
-                        <div className="flex items-center gap-3 mt-auto pt-4 border-t border-gray-100">
+                        <div className="flex flex-wrap items-center gap-x-3 gap-y-4 pt-4 border-t border-gray-100">
                             {/* Social Buttons */}
                             <a
                                 href="https://www.linkedin.com/in/daniel-hai06"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-black hover:text-white transition-all duration-200"
+                                className="flex-shrink-0 w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-black hover:text-white transition-all duration-200"
                                 aria-label="LinkedIn"
                             >
                                 <LinkedInIcon />
@@ -243,7 +250,7 @@ export default function AboutIntroBlock({ imageSrc, imageAlt, onLike }: AboutInt
                                 href="https://github.com/dhai06"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-black hover:text-white transition-all duration-200"
+                                className="flex-shrink-0 w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-black hover:text-white transition-all duration-200"
                                 aria-label="GitHub"
                             >
                                 <GitHubIcon />
@@ -252,7 +259,7 @@ export default function AboutIntroBlock({ imageSrc, imageAlt, onLike }: AboutInt
                                 href="https://www.instagram.com/dan._.hai"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-black hover:text-white transition-all duration-200"
+                                className="flex-shrink-0 w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-black hover:text-white transition-all duration-200"
                                 aria-label="Instagram"
                             >
                                 <InstagramIcon />
@@ -264,7 +271,7 @@ export default function AboutIntroBlock({ imageSrc, imageAlt, onLike }: AboutInt
 
                             <button
                                 onClick={handleClick}
-                                className="w-12 h-12 rounded-full bg-white shadow-lg flex items-center justify-center border border-gray-100 hover:shadow-xl transition-shadow duration-200"
+                                className="flex-shrink-0 w-12 h-12 rounded-full bg-white shadow-lg flex items-center justify-center border border-gray-100 hover:shadow-xl hover:bg-red-50 transition-all duration-200"
                                 aria-label="Like"
                             >
                                 <motion.div
@@ -282,7 +289,7 @@ export default function AboutIntroBlock({ imageSrc, imageAlt, onLike }: AboutInt
                     {/* Right Side - Widgets (~35%) */}
                     <div className="md:w-[35%] flex flex-col gap-4">
                         {/* Location & Time Widget */}
-                        <div className="bg-gray-50 rounded-2xl p-4 flex flex-col gap-2">
+                        <div className="bg-gray-50 rounded-2xl p-4 flex-1 flex flex-col justify-center gap-2">
                             <div className="flex items-center gap-2 text-gray-600">
                                 <MapPin className="w-4 h-4" />
                                 <span className="text-sm font-medium">Vancouver, BC</span>
@@ -296,12 +303,17 @@ export default function AboutIntroBlock({ imageSrc, imageAlt, onLike }: AboutInt
 
                         {/* Spotify Widget */}
                         <div className="bg-gray-50 rounded-2xl p-4 flex-1 flex flex-col">
-                            <div className="flex items-center gap-2 mb-3">
-                                <div className="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center">
-                                    <Music2 className="w-4 h-4 text-white" />
+                            <a
+                                href="https://open.spotify.com/user/1yxiftic7gmoy1oxgh4uidiii?si=e38e999c3c374446"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-3 mb-3 group w-fit"
+                            >
+                                <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-600 group-hover:bg-[#1DB954] group-hover:text-white transition-all duration-200">
+                                    <SpotifyIcon />
                                 </div>
-                                <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">Spotify</span>
-                            </div>
+                                <span className="text-xs font-medium text-gray-500 uppercase tracking-wide group-hover:text-[#1DB954] transition-colors duration-200">Spotify</span>
+                            </a>
 
                             <div className="flex items-center gap-3 flex-1">
                                 {/* Album art - real or placeholder */}

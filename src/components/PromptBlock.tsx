@@ -20,15 +20,15 @@ export default function PromptBlock({ prompt, onLike }: PromptBlockProps) {
     };
 
     return (
-        <div className="relative bg-white p-8 rounded-3xl my-2 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+        <div className="relative bg-white p-8 pb-20 rounded-3xl my-2 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
             <p className="text-xs uppercase font-bold tracking-widest text-[var(--foreground)]/50 mb-3">{prompt.question}</p>
-            <p className="text-3xl font-serif font-bold text-[var(--foreground)] leading-tight">
+            <p className="text-xl md:text-3xl font-serif font-bold text-[var(--foreground)] leading-tight break-words">
                 <TypewriterText text={prompt.answer} />
             </p>
             {/* Like button */}
             <button
                 onClick={handleClick}
-                className="absolute bottom-6 right-6 w-12 h-12 rounded-full bg-white shadow-lg flex items-center justify-center border border-gray-100 hover:shadow-xl transition-shadow"
+                className="absolute bottom-6 right-6 w-12 h-12 rounded-full bg-white shadow-lg flex items-center justify-center border border-gray-100 hover:shadow-xl hover:bg-red-50 transition-all"
                 aria-label="Like"
             >
                 <motion.div

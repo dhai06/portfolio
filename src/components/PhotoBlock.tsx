@@ -31,7 +31,7 @@ export default function PhotoBlock({ src, alt, onLike }: PhotoBlockProps) {
             {/* Like button overlay */}
             <button
                 onClick={handleClick}
-                className="absolute bottom-6 right-6 w-12 h-12 rounded-full bg-white shadow-lg flex items-center justify-center border border-gray-100 hover:shadow-xl transition-shadow"
+                className="absolute bottom-6 right-6 w-12 h-12 rounded-full bg-white shadow-lg flex items-center justify-center border border-gray-100 hover:shadow-xl hover:bg-red-50 transition-all"
                 aria-label="Like"
             >
                 <motion.div

@@ -15,8 +15,8 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "Portfolio",
-  description: "Minimalist Hinge-style Portfolio",
+  title: "dhai",
+  description: "Daniel Hai's Portfolio",
 };
 
 export default function RootLayout({

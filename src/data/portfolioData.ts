@@ -29,9 +29,9 @@ export const portfolioData: CardData[] = [
     {
         id: '1',
         type: 'about',
-        name: 'Daniel Hai',
+        name: 'WIP - Daniel Hai - WIP',
         verified: false,
-        images: ['/images/placeholder.png'],
+        images: ['/images/DSCF7233.JPG'],
         prompts: [
             {
                 question: 'I am an',
