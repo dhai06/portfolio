@@ -151,13 +151,13 @@ export default function ArtistCarousel() {
 
     return (
         <div
-            className="relative w-full h-36 md:h-56 mt-2 overflow-x-clip overflow-y-visible pb-12 md:pb-8 rounded-2xl cursor-grab active:cursor-grabbing"
+            className="relative w-full h-36 md:h-56 mt-2 overflow-x-clip overflow-y-visible pb-8 md:pb-8 rounded-2xl cursor-grab active:cursor-grabbing"
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
             style={{ perspective: '1000px' }}
         >
             <motion.div
-                className="relative w-full h-full flex items-center justify-center"
+                className="relative w-full h-full flex items-center justify-center pb-12 md:pb-0"
                 drag="x"
                 dragConstraints={{ left: 0, right: 0 }}
                 dragElastic={0.1}
