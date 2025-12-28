@@ -52,7 +52,7 @@ export default function TypewriterText({ text, className = '', startAnimation }:
         >
             {characters.map((char, index) => (
                 <motion.span key={index} variants={characterVariants}>
-                    {char === ' ' ? '\u00A0' : char}
+                    {char === ' ' ? ' ' : char}
                 </motion.span>
             ))}
         </motion.span>
