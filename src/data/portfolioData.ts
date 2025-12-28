@@ -105,14 +105,14 @@ export const portfolioData: CardData[] = [
                     media: {
                         type: 'images',
                         images: [
-                            '/images/spotify-wrapped/IMG_4577.jpg',
-                            '/images/spotify-wrapped/IMG_1504.jpg',
-                            '/images/spotify-wrapped/IMG_8276.jpg',
-                            '/images/spotify-wrapped/IMG_7009.jpg',
-                            
-                            
-                            
-                            
+                            '/images/spotify-wrapped/IMG_4577.JPG',
+                            '/images/spotify-wrapped/IMG_1504.JPG',
+                            '/images/spotify-wrapped/IMG_8276.JPG',
+                            '/images/spotify-wrapped/IMG_7009.JPG',
+
+
+
+
                         ]
                     }
                 }
