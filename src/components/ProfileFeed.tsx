@@ -317,7 +317,6 @@ export default function ProfileFeed({ profiles }: ProfileFeedProps) {
                 </button>
             </div>
 
-    // DetailsPage rendering removed
             {/* Item Details Modal */}
             {selectedItem && (
                 <ItemDetailsModal
