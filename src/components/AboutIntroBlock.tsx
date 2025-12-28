@@ -59,19 +59,14 @@ const AnimatedEqualizer = ({ isPlaying }: { isPlaying: boolean }) => {
 interface AboutIntroBlockProps {
     imageSrc: string;
     imageAlt: string;
-    onLike?: () => void;
+    isLiked: boolean;
+    onHeartClick: () => void;
 }
 
-export default function AboutIntroBlock({ imageSrc, imageAlt, onLike }: AboutIntroBlockProps) {
-    const [liked, setLiked] = useState(false);
+export default function AboutIntroBlock({ imageSrc, imageAlt, isLiked, onHeartClick }: AboutIntroBlockProps) {
     const [currentTime, setCurrentTime] = useState<string>('');
 
     const [currentInterestIndex, setCurrentInterestIndex] = useState(0);
-
-    const handleClick = () => {
-        setLiked(!liked);
-        onLike?.();
-    };
 
     const interests = [
         { name: 'Formula 1', emoji: '🏎️' },
@@ -187,6 +182,27 @@ export default function AboutIntroBlock({ imageSrc, imageAlt, onLike }: AboutInt
         }
     };
 
+    // Scroll hint state
+    const [showHint, setShowHint] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            if (window.scrollY > 50 && !isLiked) {
+                setShowHint(true);
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, [isLiked]);
+
+    // Hide hint if liked
+    useEffect(() => {
+        if (isLiked) {
+            setShowHint(false);
+        }
+    }, [isLiked]);
+
     return (
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6 w-full">
             {/* Image Block - 2 columns, portrait aspect ratio */}
@@ -211,8 +227,8 @@ export default function AboutIntroBlock({ imageSrc, imageAlt, onLike }: AboutInt
                             <h2 className="text-3xl md:text-4xl font-serif font-bold text-[var(--foreground)] leading-tight mb-2 break-words w-full">
                                 <TypewriterText text="Hi, I'm Daniel" />
                             </h2>
-                            <p className="text-base text-[var(--foreground)]/60 leading-relaxed break-words w-full">
-                                Electrical Engineering Student 
+                            <p className="text-base font-medium text-[var(--foreground)]/50 flex items-center gap-1 whitespace-normal">
+                                Electrical Engineering Student
                             </p>
                         </div>
 
@@ -391,20 +407,37 @@ export default function AboutIntroBlock({ imageSrc, imageAlt, onLike }: AboutInt
 
                     <span className="text-sm text-[var(--foreground)]/40 italic hidden sm:block">tap to see more →</span>
 
-                    <button
-                        onClick={handleClick}
-                        className="flex-shrink-0 w-12 h-12 rounded-full bg-white shadow-lg flex items-center justify-center border border-gray-100 hover:shadow-xl hover:bg-red-50 transition-all duration-200"
-                        aria-label="Like"
-                    >
-                        <motion.div
-                            animate={{ scale: liked ? [1, 1.4, 1] : 1 }}
-                            transition={{ duration: 0.35, ease: "easeOut" }}
+                    <div className="relative group/heart">
+                        <AnimatePresence>
+                            {showHint && !isLiked && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: 5 }}
+                                    className="absolute bottom-full right-0 mb-3 whitespace-nowrap z-10 pointer-events-none"
+                                >
+                                    <div className="bg-black text-white px-3 py-1.5 rounded-lg text-sm font-medium shadow-xl">
+                                        press this :)
+                                        <div className="absolute -bottom-1 right-5 w-2 h-2 bg-black transform rotate-45"></div>
+                                    </div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                        <button
+                            onClick={onHeartClick}
+                            className="flex-shrink-0 w-12 h-12 rounded-full bg-white shadow-lg flex items-center justify-center border border-gray-100 hover:border-red-500 hover:shadow-xl hover:bg-red-50 transition-all duration-200 relative z-10"
+                            aria-label="Like"
                         >
-                            <Heart
-                                className={`w-6 h-6 transition-colors duration-200 ${liked ? 'fill-red-500 text-red-500' : 'text-gray-400'}`}
-                            />
-                        </motion.div>
-                    </button>
+                            <motion.div
+                                animate={{ scale: isLiked ? [1, 1.4, 1] : 1 }}
+                                transition={{ duration: 0.35, ease: "easeOut" }}
+                            >
+                                <Heart
+                                    className={`w-6 h-6 transition-colors duration-200 ${isLiked ? 'fill-red-500 text-red-500' : 'text-gray-400 group-hover/heart:text-red-500'}`}
+                                />
+                            </motion.div>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

@@ -6,10 +6,12 @@ import { AnimatePresence, motion, useInView } from 'framer-motion';
 import PhotoBlock from './PhotoBlock';
 import PromptBlock from './PromptBlock';
 import InfoPillsBlock from './InfoPillsBlock';
-import DetailsPage from './DetailsPage';
+// DetailsPage import removed
 import Menu from './Menu';
 import AboutIntroBlock from './AboutIntroBlock';
-import { CardData } from '@/data/portfolioData';
+import SummaryBlock from './SummaryBlock';
+import ItemDetailsModal from './ItemDetailsModal';
+import { CardData, ImageItem, PromptData } from '@/data/portfolioData';
 import React, { useRef } from 'react';
 import { BlockVisibleProvider } from './BlockVisibleContext';
 
@@ -102,10 +104,12 @@ function SequentialBlock({ children, canAnimate, onComplete }: SequentialBlockPr
 
 export default function ProfileFeed({ profiles }: ProfileFeedProps) {
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [showDetails, setShowDetails] = useState(false);
+    // showDetails state removed
     const [direction, setDirection] = useState(0);
     const [isInitialMount, setIsInitialMount] = useState(true);
     const [animatedBlocks, setAnimatedBlocks] = useState<Set<number>>(new Set([0])); // Start with first block ready
+    const [likedItems, setLikedItems] = useState<Map<string, string>>(new Map());
+    const [selectedItem, setSelectedItem] = useState<ImageItem | PromptData | null>(null);
     const currentProfile = profiles[currentIndex];
 
     // Reset animated blocks when profile changes
@@ -125,8 +129,29 @@ export default function ProfileFeed({ profiles }: ProfileFeedProps) {
         setCurrentIndex((prev) => (prev - 1 + profiles.length) % profiles.length);
     };
 
-    const handleLike = () => {
-        setShowDetails(true);
+    // handleLike removed
+
+    const toggleLike = (id: string, summary: string) => {
+        setLikedItems(prev => {
+            const next = new Map(prev);
+            if (next.has(id)) {
+                next.delete(id);
+            } else {
+                next.set(id, summary);
+            }
+            return next;
+        });
+    };
+
+    // Heart click handler: toggles like/unlike AND opens modal (only when liking)
+    const handleHeartClick = (item: ImageItem | PromptData, id: string, summary: string) => {
+        const isCurrentlyLiked = likedItems.has(id);
+        // Toggle like state
+        toggleLike(id, summary);
+        // Open the modal only if we're liking (not unliking)
+        if (!isCurrentlyLiked) {
+            setSelectedItem(item);
+        }
     };
 
     // Interleave images and prompts for a Hinge-like feed
@@ -136,33 +161,41 @@ export default function ProfileFeed({ profiles }: ProfileFeedProps) {
 
         // For about page, render first image and first prompt side by side
         if (currentProfile.type === 'about' && currentProfile.images[0]) {
+            const introImg = currentProfile.images[0];
             blocks.push(
                 <AboutIntroBlock
                     key="about-intro-0"
-                    imageSrc={currentProfile.images[0]}
+                    imageSrc={introImg.src}
                     imageAlt={currentProfile.name}
-                    onLike={handleLike}
+                    isLiked={likedItems.has(introImg.id)}
+                    onHeartClick={() => handleHeartClick(introImg, introImg.id, introImg.likeSummary)}
                 />
             );
 
             // Continue with remaining blocks starting from index 1
             for (let i = 1; i < maxLen; i++) {
                 if (currentProfile.images[i]) {
+                    const img = currentProfile.images[i];
                     blocks.push(
                         <PhotoBlock
                             key={`img-${i}`}
-                            src={currentProfile.images[i]}
+                            src={img.src}
                             alt={currentProfile.name}
-                            onLike={handleLike}
+                            isLiked={likedItems.has(img.id)}
+                            onHeartClick={() => handleHeartClick(img, img.id, img.likeSummary)}
                         />
                     );
                 }
                 if (currentProfile.prompts[i]) {
+                    const prompt = currentProfile.prompts[i];
+                    const promptId = prompt.id || `prompt-${i}`;
+                    const promptSummary = prompt.likeSummary || prompt.answer;
                     blocks.push(
                         <PromptBlock
                             key={`prompt-${i}`}
-                            prompt={currentProfile.prompts[i]}
-                            onLike={handleLike}
+                            prompt={prompt}
+                            isLiked={likedItems.has(promptId)}
+                            onHeartClick={() => handleHeartClick(prompt, promptId, promptSummary)}
                         />
                     );
                 }
@@ -171,26 +204,40 @@ export default function ProfileFeed({ profiles }: ProfileFeedProps) {
             // For other profile types, use normal interleaving
             for (let i = 0; i < maxLen; i++) {
                 if (currentProfile.images[i]) {
+                    const img = currentProfile.images[i];
                     blocks.push(
                         <PhotoBlock
                             key={`img-${i}`}
-                            src={currentProfile.images[i]}
+                            src={img.src}
                             alt={currentProfile.name}
-                            onLike={handleLike}
+                            isLiked={likedItems.has(img.id)}
+                            onHeartClick={() => handleHeartClick(img, img.id, img.likeSummary)}
                         />
                     );
                 }
                 if (currentProfile.prompts[i]) {
+                    const prompt = currentProfile.prompts[i];
+                    const promptId = prompt.id || `prompt-${i}`;
+                    const promptSummary = prompt.likeSummary || prompt.answer;
                     blocks.push(
                         <PromptBlock
                             key={`prompt-${i}`}
-                            prompt={currentProfile.prompts[i]}
-                            onLike={handleLike}
+                            prompt={prompt}
+                            isLiked={likedItems.has(promptId)}
+                            onHeartClick={() => handleHeartClick(prompt, promptId, promptSummary)}
                         />
                     );
                 }
             }
         }
+
+        // Append SummaryBlock on contact page
+        if (currentProfile.type === 'contact') {
+            blocks.push(
+                <SummaryBlock key="summary" likedSummaries={[...likedItems.values()]} />
+            );
+        }
+
         return blocks;
     };
 
@@ -270,15 +317,20 @@ export default function ProfileFeed({ profiles }: ProfileFeedProps) {
                 </button>
             </div>
 
-            {/* Details Page */}
-            <AnimatePresence>
-                {showDetails && (
-                    <DetailsPage
-                        profile={currentProfile}
-                        onClose={() => setShowDetails(false)}
-                    />
-                )}
-            </AnimatePresence>
+    // DetailsPage rendering removed
+            {/* Item Details Modal */}
+            {selectedItem && (
+                <ItemDetailsModal
+                    item={selectedItem}
+                    isLiked={likedItems.has('src' in selectedItem ? selectedItem.id : (selectedItem.id || ''))}
+                    onToggleLike={() => {
+                        const id = 'src' in selectedItem ? selectedItem.id : (selectedItem.id || '');
+                        const summary = 'src' in selectedItem ? selectedItem.likeSummary : (selectedItem.likeSummary || selectedItem.answer);
+                        toggleLike(id, summary);
+                    }}
+                    onClose={() => setSelectedItem(null)}
+                />
+            )}
         </div>
     );
 }
