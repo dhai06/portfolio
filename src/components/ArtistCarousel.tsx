@@ -49,7 +49,7 @@ function getStyleForPosition(distance: number, isMobile: boolean) {
             x: isMobile ? '55%' : '65%',
             scale: isMobile ? 0.65 : 0.75,
             zIndex: 30,
-            rotateY: -45,
+            rotateY: isMobile ? -45 : -45,
             opacity: 0.8,
         };
     }
@@ -58,7 +58,7 @@ function getStyleForPosition(distance: number, isMobile: boolean) {
             x: isMobile ? '-55%' : '-65%',
             scale: isMobile ? 0.65 : 0.75,
             zIndex: 30,
-            rotateY: 45,
+            rotateY: isMobile ? 45 : 45,
             opacity: 0.8,
         };
     }
@@ -151,10 +151,10 @@ export default function ArtistCarousel() {
 
     return (
         <div
-            className="relative w-full h-36 md:h-56 mt-2 overflow-x-clip overflow-y-visible pb-16 md:pb-8 rounded-2xl cursor-grab active:cursor-grabbing"
+            className="relative w-full h-44 md:h-56 mt-2 overflow-x-clip overflow-y-visible pb-16 md:pb-8 rounded-2xl cursor-grab active:cursor-grabbing"
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
-            style={{ perspective: '1000px' }}
+            style={{ perspective: isMobile ? '500px' : '1000px' }}
         >
             <motion.div
                 className="relative w-full h-full flex items-center justify-center py-12 md:py-0"
