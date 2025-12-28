@@ -30,8 +30,8 @@ function getCircularDistance(index: number, currentIndex: number, total: number)
     return diff;
 }
 
-// Get 3D style based on position distance from center
-function getStyleForPosition(distance: number) {
+// Get 3D style based on position distance from center - responsive version
+function getStyleForPosition(distance: number, isMobile: boolean) {
     // Center item
     if (distance === 0) {
         return {
@@ -43,11 +43,11 @@ function getStyleForPosition(distance: number) {
         };
     }
 
-    // Immediate neighbors (±1)
+    // Immediate neighbors (±1) - always visible
     if (distance === 1) {
         return {
-            x: '65%',
-            scale: 0.75,
+            x: isMobile ? '55%' : '65%',
+            scale: isMobile ? 0.65 : 0.75,
             zIndex: 30,
             rotateY: -45,
             opacity: 0.8,
@@ -55,31 +55,31 @@ function getStyleForPosition(distance: number) {
     }
     if (distance === -1) {
         return {
-            x: '-65%',
-            scale: 0.75,
+            x: isMobile ? '-55%' : '-65%',
+            scale: isMobile ? 0.65 : 0.75,
             zIndex: 30,
             rotateY: 45,
             opacity: 0.8,
         };
     }
 
-    // Far neighbors (±2)
+    // Far neighbors (±2) - only visible on desktop
     if (distance === 2) {
         return {
-            x: '110%',
-            scale: 0.55,
+            x: isMobile ? '80%' : '110%',
+            scale: isMobile ? 0.4 : 0.55,
             zIndex: 10,
             rotateY: -60,
-            opacity: 0.4,
+            opacity: isMobile ? 0 : 0.4, // Hidden on mobile
         };
     }
     if (distance === -2) {
         return {
-            x: '-110%',
-            scale: 0.55,
+            x: isMobile ? '-80%' : '-110%',
+            scale: isMobile ? 0.4 : 0.55,
             zIndex: 10,
             rotateY: 60,
-            opacity: 0.4,
+            opacity: isMobile ? 0 : 0.4, // Hidden on mobile
         };
     }
 
@@ -96,6 +96,18 @@ function getStyleForPosition(distance: number) {
 export default function ArtistCarousel() {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isPaused, setIsPaused] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
+
+    // Detect mobile viewport
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
 
     // Navigation handlers
     const goNext = useCallback(() => {
@@ -139,7 +151,7 @@ export default function ArtistCarousel() {
 
     return (
         <div
-            className="relative w-full h-44 md:h-56 mt-2 overflow-x-clip overflow-y-visible pb-4 rounded-2xl cursor-grab active:cursor-grabbing"
+            className="relative w-full h-36 md:h-56 mt-2 overflow-x-clip overflow-y-visible pb-4 rounded-2xl cursor-grab active:cursor-grabbing"
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
             style={{ perspective: '1000px' }}
@@ -155,13 +167,13 @@ export default function ArtistCarousel() {
                 {/* Render ALL images with stable keys */}
                 {artistImages.map((src, index) => {
                     const distance = getCircularDistance(index, currentIndex, artistImages.length);
-                    const style = getStyleForPosition(distance);
+                    const style = getStyleForPosition(distance, isMobile);
                     const isClickable = distance !== 0 && Math.abs(distance) <= 2;
 
                     return (
                         <motion.div
                             key={src} // Stable key - element persists and animates
-                            className={`absolute w-44 h-44 md:w-56 md:h-56 rounded-2xl overflow-hidden ${isClickable ? 'cursor-pointer' : ''
+                            className={`absolute w-28 h-28 md:w-56 md:h-56 rounded-2xl overflow-hidden ${isClickable ? 'cursor-pointer' : ''
                                 }`}
                             animate={style}
                             transition={transition}
@@ -178,7 +190,7 @@ export default function ArtistCarousel() {
                                 alt={`Artist ${index + 1}`}
                                 fill
                                 className="object-cover pointer-events-none"
-                                sizes="(max-width: 768px) 144px, 176px"
+                                sizes="(max-width: 768px) 112px, 224px"
                                 priority={Math.abs(distance) <= 1}
                             />
                         </motion.div>
