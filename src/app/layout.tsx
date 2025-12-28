@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Playfair_Display, DM_Sans } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const dmSans = DM_Sans({
@@ -30,6 +31,7 @@ export default function RootLayout({
         className={`${dmSans.variable} ${playfair.variable} antialiased bg-[#faf9f6]`}
       >
         {children}
+        <Analytics />
       </body>
     </html>
   );
