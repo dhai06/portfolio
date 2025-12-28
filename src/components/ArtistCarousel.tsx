@@ -157,7 +157,7 @@ export default function ArtistCarousel() {
             style={{ perspective: '1000px' }}
         >
             <motion.div
-                className="relative w-full h-full flex items-center justify-center pb-12 md:pb-0"
+                className="relative w-full h-full flex items-center justify-center py-12 md:py-0"
                 drag="x"
                 dragConstraints={{ left: 0, right: 0 }}
                 dragElastic={0.1}
