@@ -195,10 +195,19 @@ export default function AboutIntroBlock({ imageSrc, imageAlt, isLiked, onHeartCl
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6 w-full">
-            {/* Image Block - 2 columns, portrait aspect ratio */}
-            <div
+            {/* Image Block - 2 columns, portrait aspect ratio - animates first */}
+            <motion.div
                 className="md:col-span-2 relative h-full min-h-[400px] bg-gray-100 rounded-[2rem] overflow-hidden group cursor-pointer"
                 onClick={onBlockClick}
+                initial={{ opacity: 0, y: 40, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{
+                    delay: 0,
+                    type: "spring",
+                    stiffness: 100,
+                    damping: 20,
+                }}
+                style={{ willChange: 'transform, opacity' }}
             >
                 <Image
                     src={imageSrc}
@@ -207,12 +216,21 @@ export default function AboutIntroBlock({ imageSrc, imageAlt, isLiked, onHeartCl
                     className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
                     priority
                 />
-            </div>
+            </motion.div>
 
-            {/* Content Block - 3 columns */}
-            <div
+            {/* Content Block - 3 columns - animates second with delay */}
+            <motion.div
                 className="md:col-span-3 relative bg-white rounded-[2rem] p-6 md:p-8 flex flex-col shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden cursor-pointer"
                 onClick={onBlockClick}
+                initial={{ opacity: 0, y: 40, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{
+                    delay: 0.15,
+                    type: "spring",
+                    stiffness: 100,
+                    damping: 20,
+                }}
+                style={{ willChange: 'transform, opacity' }}
             >
                 {/* Two-column layout for desktop */}
                 <div className="relative z-10 flex flex-col md:flex-row gap-6 flex-1">
@@ -441,7 +459,7 @@ export default function AboutIntroBlock({ imageSrc, imageAlt, isLiked, onHeartCl
                         </button>
                     </div>
                 </div>
-            </div>
+            </motion.div>
         </div>
     );
 }

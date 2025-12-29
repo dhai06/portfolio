@@ -130,18 +130,16 @@ export default function ItemDetailsModal({ item, isLiked, onToggleLike, onClose 
                                         </p>
                                     </div>
                                 )}
-                            </div>
-                        )}
-
-                        {/* Fallback: show question/answer if no media is configured */}
-                        {!isImageItem(item) && !details.media && (
-                            <div className="bg-gray-50 rounded-2xl p-4 mb-6">
-                                <p className="text-xs uppercase font-bold tracking-widest text-[var(--foreground)]/50 mb-2">
-                                    {item.question}
-                                </p>
-                                <p className="text-lg font-serif text-[var(--foreground)]">
-                                    {item.answer}
-                                </p>
+                                {details.media.type === 'video' && details.media.videoUrl && (
+                                    <div className="relative rounded-2xl overflow-hidden bg-gray-50 w-full aspect-[9/16] max-w-md mx-auto">
+                                        <iframe
+                                            src={details.media.videoUrl}
+                                            className="absolute inset-0 w-full h-full"
+                                            allow="autoplay"
+                                            allowFullScreen
+                                        />
+                                    </div>
+                                )}
                             </div>
                         )}
 

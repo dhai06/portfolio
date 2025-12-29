@@ -26,7 +26,7 @@ export default function Menu({ profiles, onSelect }: MenuProps) {
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
-                        className="fixed inset-0 z-[60] bg-[var(--background)] flex flex-col items-center justify-center"
+                        className="fixed top-0 left-0 right-0 bottom-0 -mt-[env(safe-area-inset-top)] z-[60] bg-[var(--background)] flex flex-col items-center justify-center pt-[env(safe-area-inset-top)]"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}

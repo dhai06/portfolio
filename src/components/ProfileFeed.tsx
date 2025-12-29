@@ -63,35 +63,50 @@ const itemVariants = {
     }
 };
 
-// Sequential animation block component
-interface SequentialBlockProps {
+// Scroll-triggered animation block component with index-based stagger
+interface ScrollAnimationBlockProps {
     children: React.ReactNode;
-    canAnimate: boolean;
-    onComplete: () => void;
+    index: number;
+    mountTime: number;
 }
 
-function SequentialBlock({ children, canAnimate, onComplete }: SequentialBlockProps) {
+function ScrollAnimationBlock({ children, index, mountTime }: ScrollAnimationBlockProps) {
     const ref = useRef<HTMLDivElement>(null);
     const isInView = useInView(ref, { once: true, margin: "-50px" });
+    const [startAnimation, setStartAnimation] = useState(false);
+    const [delay, setDelay] = useState(0);
     const [hasAnimated, setHasAnimated] = useState(false);
 
-    // Only animate if in view AND previous block has completed
-    const shouldAnimate = isInView && canAnimate && !hasAnimated;
+    // When block enters viewport, calculate delay based on timing
+    React.useLayoutEffect(() => {
+        if (isInView && !startAnimation) {
+            const now = Date.now();
+            const timeSinceMount = now - mountTime;
+
+            // If entering viewport within 500ms of mount, use index-based stagger
+            // Otherwise (scrolled into view later), animate immediately
+            const calculatedDelay = timeSinceMount < 500 ? index * 0.1 : 0;
+
+            setDelay(calculatedDelay);
+            setStartAnimation(true);
+        }
+    }, [isInView, startAnimation, index, mountTime]);
 
     return (
         <motion.div
             ref={ref}
+            style={{ willChange: 'transform, opacity' }}
             initial={{ opacity: 0, y: 60, scale: 0.95 }}
-            animate={shouldAnimate || hasAnimated ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 60, scale: 0.95 }}
+            animate={startAnimation ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 60, scale: 0.95 }}
             transition={{
+                delay: delay,
                 type: "spring",
                 stiffness: 100,
                 damping: 20,
             }}
             onAnimationComplete={() => {
-                if (shouldAnimate && !hasAnimated) {
+                if (startAnimation && !hasAnimated) {
                     setHasAnimated(true);
-                    onComplete();
                 }
             }}
         >
@@ -104,17 +119,18 @@ function SequentialBlock({ children, canAnimate, onComplete }: SequentialBlockPr
 
 export default function ProfileFeed({ profiles }: ProfileFeedProps) {
     const [currentIndex, setCurrentIndex] = useState(0);
-    // showDetails state removed
     const [direction, setDirection] = useState(0);
     const [isInitialMount, setIsInitialMount] = useState(true);
-    const [animatedBlocks, setAnimatedBlocks] = useState<Set<number>>(new Set([0])); // Start with first block ready
     const [likedItems, setLikedItems] = useState<Map<string, string>>(new Map());
     const [selectedItem, setSelectedItem] = useState<ImageItem | PromptData | null>(null);
     const currentProfile = profiles[currentIndex];
 
-    // Reset animated blocks when profile changes
-    useEffect(() => {
-        setAnimatedBlocks(new Set([0]));
+    // Track mount time for stagger calculation - resets when profile changes
+    const [mountTime, setMountTime] = useState(Date.now());
+
+    // Reset mount time when profile changes
+    React.useEffect(() => {
+        setMountTime(Date.now());
     }, [currentIndex]);
 
     const handleNext = () => {
@@ -277,29 +293,16 @@ export default function ProfileFeed({ profiles }: ProfileFeedProps) {
                     }}
                     className="pb-24 px-4 py-4"
                 >
-                    {/* Blocks animate sequentially - each waits for previous to complete */}
+                    {/* Blocks animate with stagger effect when entering viewport */}
                     <div className="space-y-4">
-                        {renderBlocks().map((block, index) => {
-                            const canAnimate = animatedBlocks.has(index);
-                            return (
-                                <SequentialBlock
-                                    key={`${currentProfile.id}-${index}`}
-                                    canAnimate={canAnimate}
-                                    onComplete={() => {
-                                        setAnimatedBlocks(prev => new Set([...prev, index + 1]));
-                                    }}
-                                >
-                                    {block}
-                                </SequentialBlock>
-                            );
-                        })}
-                        <SequentialBlock
-                            key={`${currentProfile.id}-pills`}
-                            canAnimate={animatedBlocks.has(renderBlocks().length)}
-                            onComplete={() => { }}
-                        >
+                        {renderBlocks().map((block, index) => (
+                            <ScrollAnimationBlock key={`${currentProfile.id}-${index}`} index={index} mountTime={mountTime}>
+                                {block}
+                            </ScrollAnimationBlock>
+                        ))}
+                        <ScrollAnimationBlock key={`${currentProfile.id}-pills`} index={renderBlocks().length} mountTime={mountTime}>
                             <InfoPillsBlock pills={currentProfile.infoPills} />
-                        </SequentialBlock>
+                        </ScrollAnimationBlock>
                     </div>
                 </motion.main>
             </AnimatePresence>

@@ -5,9 +5,10 @@ export interface ItemDetails {
     relatedLinks?: { label: string; url: string }[];
     // Customizable media section for the modal
     media?: {
-        type: 'images' | 'text';
+        type: 'images' | 'text' | 'video';
         images?: string[]; // Array of image paths for carousel/gallery
         text?: string; // Custom text content
+        videoUrl?: string; // Video embed URL (e.g., Google Drive, YouTube)
     };
 }
 
@@ -130,20 +131,40 @@ export const portfolioData: CardData[] = [
                 id: 'about-prompt-5',
                 likeSummary: 'Swimming!',
                 details: {
-                    title: 'Olympic Trials',
-                    description: 'Competed in the 2024 Canadian Olympic Swimming Trials, representing years of dedication to competitive swimming.',
-                    tags: ['Swimming', 'Athletics', 'Achievement']
+                    title: 'Swimming and Coaching',
+                    description: 'I started swimming competitively at the age of 7, and have been coaching since grade 8. Throughout high school, I trained 20+ hours per week swimming 8x and going to the gym 3x per week. Currently, I coach swimmers for the Vancouver Pacific Swim Club at UBC. Here\'s the video of me getting my trials cut back in grade 12! (I\'m the one in lane 3 with the black cap and suit)',
+                    media: {
+                        type: 'video',
+                        videoUrl: 'https://drive.google.com/file/d/1btNhtGQ7SLfREAVsPAB07htRokgdLTNe/preview'
+                    }
                 }
             },
             {
-                question: 'what kind of ',
-                answer: 'I competed at the 2024 Canadian Olmypic Swimming Trials.',
-                id: 'about-prompt-5',
-                likeSummary: 'Swimming!',
+                question: 'I am also ',
+                answer: 'A classically trained pianist, and have performed at various benefit concerts for charity.',
+                id: 'about-prompt-6',
+                likeSummary: 'Piano',
                 details: {
-                    title: 'Olympic Trials',
-                    description: 'Competed in the 2024 Canadian Olympic Swimming Trials, representing years of dedication to competitive swimming.',
-                    tags: ['Swimming', 'Athletics', 'Achievement']
+                    title: 'Piano',
+                    description: 'Here are some of my favourite composers for the piano. Through performing at benefit concerts with a group of other pianists, we have been able to raise over $6000 for the Starfish Pack Program, which provides meals to children in need. Watch my performance from the 2024 benefit concert below!',
+                    media: {
+                        type: 'video',
+                        videoUrl: 'https://drive.google.com/file/d/164nSc9EULGev1F2ALzhmVZgJ2VyAY-h4/preview'
+                    },
+                    tags: ['Chopin', 'Rachmaninoff', 'Liszt', 'Debussy'],
+                    relatedLinks: [
+                        { label: 'Starfish Pack Program', url: 'https://starfishpack.com/' }
+                    ]
+                }
+            },
+            {
+                question: 'my favourite football (or soccer) team is ',
+                answer: 'Chelsea FC',
+                id: 'about-prompt-7',
+                likeSummary: 'Chelsea FC',
+                details: {
+                    title: 'Chelsea FC',
+                    description: 'not much else to see :/',
                 }
             },
         ],
