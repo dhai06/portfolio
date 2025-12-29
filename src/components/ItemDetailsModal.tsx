@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Heart, ExternalLink } from 'lucide-react';
 import { ImageItem, PromptData, ItemDetails } from '@/data/portfolioData';
@@ -19,6 +20,16 @@ interface ItemDetailsModalProps {
 
 export default function ItemDetailsModal({ item, isLiked, onToggleLike, onClose }: ItemDetailsModalProps) {
     const details: ItemDetails | undefined = item.details;
+
+    // Lock body scroll when modal is open
+    useEffect(() => {
+        const originalOverflow = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+
+        return () => {
+            document.body.style.overflow = originalOverflow;
+        };
+    }, []);
 
     if (!details) {
         return null;
