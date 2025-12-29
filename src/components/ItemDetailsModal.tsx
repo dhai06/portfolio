@@ -131,10 +131,10 @@ export default function ItemDetailsModal({ item, isLiked, onToggleLike, onClose 
                                     </div>
                                 )}
                                 {details.media.type === 'video' && details.media.videoUrl && (
-                                    <div className="relative rounded-2xl overflow-hidden bg-gray-50 w-full aspect-[9/16] max-w-md mx-auto">
+                                    <div className="relative w-full overflow-hidden bg-gray-50 max-w-md mx-auto rounded-2xl" style={{ paddingBottom: '177.77%' }}>
                                         <iframe
                                             src={details.media.videoUrl}
-                                            className="absolute inset-0 w-full h-full"
+                                            className="absolute top-0 left-0 w-full h-full border-0"
                                             allow="autoplay"
                                             allowFullScreen
                                         />
