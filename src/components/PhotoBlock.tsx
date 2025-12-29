@@ -9,11 +9,15 @@ interface PhotoBlockProps {
     alt: string;
     isLiked: boolean;
     onHeartClick: () => void;
+    onBlockClick?: () => void;
 }
 
-export default function PhotoBlock({ src, alt, isLiked, onHeartClick }: PhotoBlockProps) {
+export default function PhotoBlock({ src, alt, isLiked, onHeartClick, onBlockClick }: PhotoBlockProps) {
     return (
-        <div className="relative w-full aspect-[4/5] bg-gray-100 rounded-3xl overflow-hidden group">
+        <div
+            className="relative w-full aspect-[4/5] bg-gray-100 rounded-3xl overflow-hidden group cursor-pointer"
+            onClick={onBlockClick}
+        >
             <Image
                 src={src}
                 alt={alt}
@@ -23,8 +27,11 @@ export default function PhotoBlock({ src, alt, isLiked, onHeartClick }: PhotoBlo
             />
             {/* Like button overlay */}
             <button
-                onClick={onHeartClick}
-                className="group/heart absolute bottom-6 right-6 w-12 h-12 rounded-full bg-white shadow-lg flex items-center justify-center border border-gray-100 hover:border-red-500 hover:shadow-xl hover:bg-red-50 transition-all"
+                onClick={(e) => {
+                    e.stopPropagation();
+                    onHeartClick();
+                }}
+                className="group/heart absolute bottom-6 right-6 w-12 h-12 rounded-full bg-white shadow-lg flex items-center justify-center border border-gray-100 hover:border-red-500 active:border-red-500 hover:shadow-xl active:shadow-xl hover:bg-red-50 active:bg-red-50 transition-all"
                 aria-label="Like"
             >
                 <motion.div
@@ -32,7 +39,7 @@ export default function PhotoBlock({ src, alt, isLiked, onHeartClick }: PhotoBlo
                     transition={{ duration: 0.35, ease: "easeOut" }}
                 >
                     <Heart
-                        className={`w-6 h-6 transition-colors duration-200 ${isLiked ? 'fill-red-500 text-red-500' : 'text-gray-400 group-hover/heart:text-red-500'}`}
+                        className={`w-6 h-6 transition-colors duration-200 ${isLiked ? 'fill-red-500 text-red-500' : 'text-gray-400 group-hover/heart:text-red-500 group-active/heart:text-red-500'}`}
                     />
                 </motion.div>
             </button>

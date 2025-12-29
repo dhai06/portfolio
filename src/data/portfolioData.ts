@@ -64,7 +64,7 @@ export const portfolioData: CardData[] = [
             likeSummary: 'My about me',
             details: {
                 title: 'My interests',
-                description: 'hint: keep hitting the heart on blocks to see more details :)',
+                description: 'hint: tap the blocks to see more details or press the heart to also like it :)',
                 tags: ['Random Projects', 'Formula 1', 'Cooking', 'Swimming', 'Fashion', 'Working Out', 'Playing Piano', 'Discovering Restaurants', 'Mechanical Keyboards', 'Watching TV Shows']
             }
         }],
@@ -109,10 +109,6 @@ export const portfolioData: CardData[] = [
                             '/images/spotify-wrapped/IMG_1504.JPG',
                             '/images/spotify-wrapped/IMG_8276.JPG',
                             '/images/spotify-wrapped/IMG_7009.JPG',
-
-
-
-
                         ]
                     }
                 }
@@ -130,6 +126,17 @@ export const portfolioData: CardData[] = [
             },
             {
                 question: 'A fact about me is that',
+                answer: 'I competed at the 2024 Canadian Olmypic Swimming Trials.',
+                id: 'about-prompt-5',
+                likeSummary: 'Swimming!',
+                details: {
+                    title: 'Olympic Trials',
+                    description: 'Competed in the 2024 Canadian Olympic Swimming Trials, representing years of dedication to competitive swimming.',
+                    tags: ['Swimming', 'Athletics', 'Achievement']
+                }
+            },
+            {
+                question: 'what kind of ',
                 answer: 'I competed at the 2024 Canadian Olmypic Swimming Trials.',
                 id: 'about-prompt-5',
                 likeSummary: 'Swimming!',

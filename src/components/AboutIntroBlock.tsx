@@ -61,9 +61,10 @@ interface AboutIntroBlockProps {
     imageAlt: string;
     isLiked: boolean;
     onHeartClick: () => void;
+    onBlockClick?: () => void;
 }
 
-export default function AboutIntroBlock({ imageSrc, imageAlt, isLiked, onHeartClick }: AboutIntroBlockProps) {
+export default function AboutIntroBlock({ imageSrc, imageAlt, isLiked, onHeartClick, onBlockClick }: AboutIntroBlockProps) {
     const [currentTime, setCurrentTime] = useState<string>('');
 
     const [currentInterestIndex, setCurrentInterestIndex] = useState(0);
@@ -182,21 +183,10 @@ export default function AboutIntroBlock({ imageSrc, imageAlt, isLiked, onHeartCl
         }
     };
 
-    // Scroll hint state
-    const [showHint, setShowHint] = useState(false);
+    // Hint state - show immediately, hide after first heart press
+    const [showHint, setShowHint] = useState(true);
 
-    useEffect(() => {
-        const handleScroll = () => {
-            if (window.scrollY > 50 && !isLiked) {
-                setShowHint(true);
-            }
-        };
-
-        window.addEventListener('scroll', handleScroll, { passive: true });
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, [isLiked]);
-
-    // Hide hint if liked
+    // Hide hint after first heart press
     useEffect(() => {
         if (isLiked) {
             setShowHint(false);
@@ -206,7 +196,10 @@ export default function AboutIntroBlock({ imageSrc, imageAlt, isLiked, onHeartCl
     return (
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6 w-full">
             {/* Image Block - 2 columns, portrait aspect ratio */}
-            <div className="md:col-span-2 relative h-full min-h-[400px] bg-gray-100 rounded-[2rem] overflow-hidden group">
+            <div
+                className="md:col-span-2 relative h-full min-h-[400px] bg-gray-100 rounded-[2rem] overflow-hidden group cursor-pointer"
+                onClick={onBlockClick}
+            >
                 <Image
                     src={imageSrc}
                     alt={imageAlt}
@@ -217,7 +210,10 @@ export default function AboutIntroBlock({ imageSrc, imageAlt, isLiked, onHeartCl
             </div>
 
             {/* Content Block - 3 columns */}
-            <div className="md:col-span-3 relative bg-white rounded-[2rem] p-6 md:p-8 flex flex-col shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden">
+            <div
+                className="md:col-span-3 relative bg-white rounded-[2rem] p-6 md:p-8 flex flex-col shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden cursor-pointer"
+                onClick={onBlockClick}
+            >
                 {/* Two-column layout for desktop */}
                 <div className="relative z-10 flex flex-col md:flex-row gap-6 flex-1">
                     {/* Left Side - Main Content (~65%) */}
@@ -318,12 +314,13 @@ export default function AboutIntroBlock({ imageSrc, imageAlt, isLiked, onHeartCl
                                 href="https://open.spotify.com/user/1yxiftic7gmoy1oxgh4uidiii?si=e38e999c3c374446"
                                 target="_blank"
                                 rel="noopener noreferrer"
+                                onClick={(e) => e.stopPropagation()}
                                 className="flex items-center gap-3 mb-3 group w-fit"
                             >
-                                <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-600 group-hover:bg-[#1DB954] group-hover:text-white transition-all duration-200">
+                                <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-600 group-hover:bg-[#1DB954] group-active:bg-[#1DB954] group-hover:text-white group-active:text-white transition-all duration-200">
                                     <SpotifyIcon />
                                 </div>
-                                <span className="text-xs font-medium text-gray-500 uppercase tracking-wide group-hover:text-[#1DB954] transition-colors duration-200">Spotify</span>
+                                <span className="text-xs font-medium text-gray-500 uppercase tracking-wide group-hover:text-[#1DB954] group-active:text-[#1DB954] transition-colors duration-200">Spotify</span>
                             </a>
 
                             <div className="flex flex-row items-center gap-3 md:flex-col md:items-start xl:flex-row xl:items-center">
@@ -355,6 +352,7 @@ export default function AboutIntroBlock({ imageSrc, imageAlt, isLiked, onHeartCl
                                                 href={spotifyData.songUrl}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
+                                                onClick={(e) => e.stopPropagation()}
                                                 className="block hover:underline"
                                             >
                                                 <p className="text-xs md:text-sm font-semibold text-gray-900 line-clamp-2 break-words">
@@ -379,7 +377,8 @@ export default function AboutIntroBlock({ imageSrc, imageAlt, isLiked, onHeartCl
                         href="https://www.linkedin.com/in/daniel-hai06"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex-shrink-0 w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-black hover:text-white transition-all duration-200"
+                        onClick={(e) => e.stopPropagation()}
+                        className="flex-shrink-0 w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-black active:bg-black hover:text-white active:text-white transition-all duration-200"
                         aria-label="LinkedIn"
                     >
                         <LinkedInIcon />
@@ -388,7 +387,8 @@ export default function AboutIntroBlock({ imageSrc, imageAlt, isLiked, onHeartCl
                         href="https://github.com/dhai06"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex-shrink-0 w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-black hover:text-white transition-all duration-200"
+                        onClick={(e) => e.stopPropagation()}
+                        className="flex-shrink-0 w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-black active:bg-black hover:text-white active:text-white transition-all duration-200"
                         aria-label="GitHub"
                     >
                         <GitHubIcon />
@@ -397,7 +397,8 @@ export default function AboutIntroBlock({ imageSrc, imageAlt, isLiked, onHeartCl
                         href="https://www.instagram.com/dan._.hai"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex-shrink-0 w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-black hover:text-white transition-all duration-200"
+                        onClick={(e) => e.stopPropagation()}
+                        className="flex-shrink-0 w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-black active:bg-black hover:text-white active:text-white transition-all duration-200"
                         aria-label="Instagram"
                     >
                         <InstagramIcon />
@@ -405,27 +406,28 @@ export default function AboutIntroBlock({ imageSrc, imageAlt, isLiked, onHeartCl
 
                     <div className="flex-1" />
 
-                    <span className="text-sm text-[var(--foreground)]/40 italic hidden sm:block">tap to see more →</span>
-
-                    <div className="relative group/heart">
+                    <div className="relative group/heart flex items-center">
                         <AnimatePresence>
                             {showHint && !isLiked && (
                                 <motion.div
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: 5 }}
-                                    className="absolute bottom-full right-0 mb-3 whitespace-nowrap z-10 pointer-events-none"
+                                    initial={{ opacity: 0, x: 10 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: 5 }}
+                                    className="absolute right-full mr-3 whitespace-nowrap z-10 pointer-events-none"
                                 >
-                                    <div className="bg-black text-white px-3 py-1.5 rounded-lg text-sm font-medium shadow-xl">
+                                    <div className="bg-black text-white px-3 py-1.5 rounded-lg text-sm font-medium shadow-xl relative">
                                         press this :)
-                                        <div className="absolute -bottom-1 right-5 w-2 h-2 bg-black transform rotate-45"></div>
+                                        <div className="absolute top-1/2 -right-1 -translate-y-1/2 w-2 h-2 bg-black transform rotate-45"></div>
                                     </div>
                                 </motion.div>
                             )}
                         </AnimatePresence>
                         <button
-                            onClick={onHeartClick}
-                            className="flex-shrink-0 w-12 h-12 rounded-full bg-white shadow-lg flex items-center justify-center border border-gray-100 hover:border-red-500 hover:shadow-xl hover:bg-red-50 transition-all duration-200 relative z-10"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onHeartClick();
+                            }}
+                            className="flex-shrink-0 w-12 h-12 rounded-full bg-white shadow-lg flex items-center justify-center border border-gray-100 hover:border-red-500 active:border-red-500 hover:shadow-xl active:shadow-xl hover:bg-red-50 active:bg-red-50 transition-all duration-200 relative z-10"
                             aria-label="Like"
                         >
                             <motion.div
@@ -433,7 +435,7 @@ export default function AboutIntroBlock({ imageSrc, imageAlt, isLiked, onHeartCl
                                 transition={{ duration: 0.35, ease: "easeOut" }}
                             >
                                 <Heart
-                                    className={`w-6 h-6 transition-colors duration-200 ${isLiked ? 'fill-red-500 text-red-500' : 'text-gray-400 group-hover/heart:text-red-500'}`}
+                                    className={`w-6 h-6 transition-colors duration-200 ${isLiked ? 'fill-red-500 text-red-500' : 'text-gray-400 group-hover/heart:text-red-500 group-active/heart:text-red-500'}`}
                                 />
                             </motion.div>
                         </button>

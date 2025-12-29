@@ -10,17 +10,21 @@ interface PromptBlockProps {
     prompt: PromptData;
     isLiked: boolean;
     onHeartClick: () => void;
+    onBlockClick?: () => void;
 }
 
 // Check if this prompt should show the artist carousel
 const isArtistPrompt = (question: string) =>
     question.toLowerCase().includes('music taste') || question.toLowerCase().includes('favourite artist');
 
-export default function PromptBlock({ prompt, isLiked, onHeartClick }: PromptBlockProps) {
+export default function PromptBlock({ prompt, isLiked, onHeartClick, onBlockClick }: PromptBlockProps) {
     const showArtistCarousel = isArtistPrompt(prompt.question);
 
     return (
-        <div className="relative bg-white p-8 pb-20 rounded-3xl my-2 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+        <div
+            className="relative bg-white p-8 pb-20 rounded-3xl my-2 shadow-[0_8px_30px_rgb(0,0,0,0.04)] cursor-pointer"
+            onClick={onBlockClick}
+        >
             <p className="text-xs uppercase font-bold tracking-widest text-[var(--foreground)]/50 mb-3">{prompt.question}</p>
             {showArtistCarousel ? (
                 <ArtistCarousel />
@@ -31,8 +35,11 @@ export default function PromptBlock({ prompt, isLiked, onHeartClick }: PromptBlo
             )}
             {/* Like button */}
             <button
-                onClick={onHeartClick}
-                className="group/heart absolute bottom-6 right-6 w-12 h-12 rounded-full bg-white shadow-lg flex items-center justify-center border border-gray-100 hover:border-red-500 hover:shadow-xl hover:bg-red-50 transition-all"
+                onClick={(e) => {
+                    e.stopPropagation();
+                    onHeartClick();
+                }}
+                className="group/heart absolute bottom-6 right-6 w-12 h-12 rounded-full bg-white shadow-lg flex items-center justify-center border border-gray-100 hover:border-red-500 active:border-red-500 hover:shadow-xl active:shadow-xl hover:bg-red-50 active:bg-red-50 transition-all"
                 aria-label="Like"
             >
                 <motion.div
@@ -40,7 +47,7 @@ export default function PromptBlock({ prompt, isLiked, onHeartClick }: PromptBlo
                     transition={{ duration: 0.35, ease: "easeOut" }}
                 >
                     <Heart
-                        className={`w-6 h-6 transition-colors duration-200 ${isLiked ? 'fill-red-500 text-red-500' : 'text-gray-400 group-hover/heart:text-red-500'}`}
+                        className={`w-6 h-6 transition-colors duration-200 ${isLiked ? 'fill-red-500 text-red-500' : 'text-gray-400 group-hover/heart:text-red-500 group-active/heart:text-red-500'}`}
                     />
                 </motion.div>
             </button>

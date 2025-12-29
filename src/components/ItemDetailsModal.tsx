@@ -90,7 +90,7 @@ export default function ItemDetailsModal({ item, isLiked, onToggleLike, onClose 
                             {/* Close button */}
                             <button
                                 onClick={onClose}
-                                className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+                                className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 active:bg-gray-200 transition-colors"
                                 aria-label="Close"
                             >
                                 <X className="w-5 h-5 text-[var(--foreground)]" />
@@ -158,7 +158,7 @@ export default function ItemDetailsModal({ item, isLiked, onToggleLike, onClose 
                                             href={link.url}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="flex items-center gap-2 px-4 py-2 bg-[var(--foreground)] text-white rounded-full text-sm font-medium hover:opacity-90 transition-opacity"
+                                            className="flex items-center gap-2 px-4 py-2 bg-[var(--foreground)] text-white rounded-full text-sm font-medium hover:opacity-90 active:opacity-90 transition-opacity"
                                         >
                                             <ExternalLink className="w-4 h-4" />
                                             {link.label}
@@ -175,7 +175,7 @@ export default function ItemDetailsModal({ item, isLiked, onToggleLike, onClose 
                             </span>
                             <button
                                 onClick={onToggleLike}
-                                className="group/heart w-12 h-12 rounded-full bg-white shadow-lg flex items-center justify-center border border-gray-100 hover:border-red-500 hover:shadow-xl hover:bg-red-50 transition-all duration-200"
+                                className="group/heart w-12 h-12 rounded-full bg-white shadow-lg flex items-center justify-center border border-gray-100 hover:border-red-500 active:border-red-500 hover:shadow-xl active:shadow-xl hover:bg-red-50 active:bg-red-50 transition-all duration-200"
                                 aria-label="Like"
                             >
                                 <motion.div
@@ -183,7 +183,7 @@ export default function ItemDetailsModal({ item, isLiked, onToggleLike, onClose 
                                     transition={{ duration: 0.35, ease: "easeOut" }}
                                 >
                                     <Heart
-                                        className={`w-6 h-6 transition-colors duration-200 ${isLiked ? 'fill-red-500 text-red-500' : 'text-gray-400 group-hover/heart:text-red-500'}`}
+                                        className={`w-6 h-6 transition-colors duration-200 ${isLiked ? 'fill-red-500 text-red-500' : 'text-gray-400 group-hover/heart:text-red-500 group-active/heart:text-red-500'}`}
                                     />
                                 </motion.div>
                             </button>

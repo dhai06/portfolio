@@ -17,7 +17,7 @@ export default function Menu({ profiles, onSelect }: MenuProps) {
         <>
             <button
                 onClick={() => setIsOpen(true)}
-                className="p-2 rounded-full hover:bg-[var(--border)] transition-colors"
+                className="p-2 rounded-full hover:bg-[var(--border)] active:bg-[var(--border)] transition-colors"
                 aria-label="Open Menu"
             >
                 <MenuIcon className="text-[var(--foreground)] w-5 h-5" />
@@ -33,7 +33,7 @@ export default function Menu({ profiles, onSelect }: MenuProps) {
                     >
                         <button
                             onClick={() => setIsOpen(false)}
-                            className="absolute top-4 right-4 p-3 rounded-full hover:bg-[var(--border)] transition-colors"
+                            className="absolute top-4 right-4 p-3 rounded-full hover:bg-[var(--border)] active:bg-[var(--border)] transition-colors"
                         >
                             <X className="text-[var(--foreground)] w-5 h-5" />
                         </button>
@@ -46,7 +46,7 @@ export default function Menu({ profiles, onSelect }: MenuProps) {
                                         onSelect(index);
                                         setIsOpen(false);
                                     }}
-                                    className="text-2xl font-serif text-[var(--foreground)]/70 hover:text-[var(--foreground)] hover:scale-105 transition-all"
+                                    className="text-2xl font-serif text-[var(--foreground)]/70 hover:text-[var(--foreground)] active:text-[var(--foreground)] hover:scale-105 active:scale-105 transition-all"
                                 >
                                     {profile.type === 'about' ? 'About' : profile.type === 'project' ? profile.name : 'Contact'}
                                 </button>

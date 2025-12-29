@@ -169,6 +169,7 @@ export default function ProfileFeed({ profiles }: ProfileFeedProps) {
                     imageAlt={currentProfile.name}
                     isLiked={likedItems.has(introImg.id)}
                     onHeartClick={() => handleHeartClick(introImg, introImg.id, introImg.likeSummary)}
+                    onBlockClick={() => setSelectedItem(introImg)}
                 />
             );
 
@@ -183,6 +184,7 @@ export default function ProfileFeed({ profiles }: ProfileFeedProps) {
                             alt={currentProfile.name}
                             isLiked={likedItems.has(img.id)}
                             onHeartClick={() => handleHeartClick(img, img.id, img.likeSummary)}
+                            onBlockClick={() => setSelectedItem(img)}
                         />
                     );
                 }
@@ -196,6 +198,7 @@ export default function ProfileFeed({ profiles }: ProfileFeedProps) {
                             prompt={prompt}
                             isLiked={likedItems.has(promptId)}
                             onHeartClick={() => handleHeartClick(prompt, promptId, promptSummary)}
+                            onBlockClick={() => setSelectedItem(prompt)}
                         />
                     );
                 }
@@ -212,6 +215,7 @@ export default function ProfileFeed({ profiles }: ProfileFeedProps) {
                             alt={currentProfile.name}
                             isLiked={likedItems.has(img.id)}
                             onHeartClick={() => handleHeartClick(img, img.id, img.likeSummary)}
+                            onBlockClick={() => setSelectedItem(img)}
                         />
                     );
                 }
@@ -225,6 +229,7 @@ export default function ProfileFeed({ profiles }: ProfileFeedProps) {
                             prompt={prompt}
                             isLiked={likedItems.has(promptId)}
                             onHeartClick={() => handleHeartClick(prompt, promptId, promptSummary)}
+                            onBlockClick={() => setSelectedItem(prompt)}
                         />
                     );
                 }
@@ -303,14 +308,14 @@ export default function ProfileFeed({ profiles }: ProfileFeedProps) {
             <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex gap-4">
                 <button
                     onClick={handlePrevious}
-                    className="w-16 h-16 rounded-full bg-white shadow-xl flex items-center justify-center border border-[var(--border)] hover:scale-105 transition-transform"
+                    className="w-16 h-16 rounded-full bg-white shadow-xl flex items-center justify-center border border-[var(--border)] hover:scale-105 active:scale-105 transition-transform"
                     aria-label="Previous Profile"
                 >
                     <ChevronLeft className="w-8 h-8 text-[var(--foreground)]" />
                 </button>
                 <button
                     onClick={handleNext}
-                    className="w-16 h-16 rounded-full bg-white shadow-xl flex items-center justify-center border border-[var(--border)] hover:scale-105 transition-transform"
+                    className="w-16 h-16 rounded-full bg-white shadow-xl flex items-center justify-center border border-[var(--border)] hover:scale-105 active:scale-105 transition-transform"
                     aria-label="Next Profile"
                 >
                     <ChevronRight className="w-8 h-8 text-[var(--foreground)]" />
