@@ -11,11 +11,6 @@ function isImageItem(item: ImageItem | PromptData): item is ImageItem {
     return 'src' in item;
 }
 
-// Convert Google Drive preview URL to direct download URL for video playback
-function getDriveDirectLink(url: string) {
-    return url.replace('/file/d/', '/uc?export=download&id=').replace('/preview', '');
-}
-
 interface ItemDetailsModalProps {
     item: ImageItem | PromptData;
     isLiked: boolean;
@@ -137,14 +132,11 @@ export default function ItemDetailsModal({ item, isLiked, onToggleLike, onClose 
                                 )}
                                 {details.media.type === 'video' && details.media.videoUrl && (
                                     <div className="relative rounded-2xl overflow-hidden bg-gray-50 w-full aspect-[9/16] max-w-md mx-auto">
-                                        <video
-                                            src={getDriveDirectLink(details.media.videoUrl)}
-                                            className="w-full h-full object-cover"
-                                            autoPlay
-                                            loop
-                                            muted
-                                            playsInline
-                                            controls
+                                        <iframe
+                                            src={details.media.videoUrl}
+                                            className="absolute inset-0 w-full h-full"
+                                            allow="autoplay"
+                                            allowFullScreen
                                         />
                                     </div>
                                 )}
