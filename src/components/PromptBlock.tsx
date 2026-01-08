@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { PromptData } from '@/data/portfolioData';
 import TypewriterText from './TypewriterText';
 import ArtistCarousel from './ArtistCarousel';
+import MovieRail from './MovieRail';
 
 interface PromptBlockProps {
     prompt: PromptData;
@@ -17,8 +18,15 @@ interface PromptBlockProps {
 const isArtistPrompt = (question: string) =>
     question.toLowerCase().includes('music taste') || question.toLowerCase().includes('favourite artist');
 
+// Check if this prompt should show the movie rail
+const isMoviePrompt = (question: string) => {
+    const lower = question.toLowerCase();
+    return lower.includes('movie') || lower.includes('show') || lower.includes('tv');
+};
+
 export default function PromptBlock({ prompt, isLiked, onHeartClick, onBlockClick }: PromptBlockProps) {
     const showArtistCarousel = isArtistPrompt(prompt.question);
+    const showMovieRail = isMoviePrompt(prompt.question);
 
     return (
         <div
@@ -28,6 +36,8 @@ export default function PromptBlock({ prompt, isLiked, onHeartClick, onBlockClic
             <p className="text-xs uppercase font-bold tracking-widest text-[var(--foreground)]/50 mb-3">{prompt.question}</p>
             {showArtistCarousel ? (
                 <ArtistCarousel />
+            ) : showMovieRail ? (
+                <MovieRail />
             ) : (
                 <p className="text-xl md:text-3xl font-serif font-bold text-[var(--foreground)] leading-tight break-words">
                     <TypewriterText text={prompt.answer} />
