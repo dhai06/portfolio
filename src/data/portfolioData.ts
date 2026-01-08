@@ -141,7 +141,7 @@ export const portfolioData: CardData[] = [
             },
             {
                 question: 'I am also ',
-                answer: 'A classically trained pianist, and have performed at various benefit concerts for charity.',
+                answer: 'A classically trained pianist, and have raised over $6000 for charity through various benefit concerts.',
                 id: 'about-prompt-6',
                 likeSummary: 'Piano',
                 details: {

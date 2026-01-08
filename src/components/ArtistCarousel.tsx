@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, PanInfo } from 'framer-motion';
 import Image from 'next/image';
 
@@ -97,6 +97,15 @@ export default function ArtistCarousel() {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isPaused, setIsPaused] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
+    const isDragging = useRef(false);
+
+    // Prevent parent click when dragging
+    const handleClick = useCallback((e: React.MouseEvent) => {
+        if (isDragging.current) {
+            e.stopPropagation();
+            e.preventDefault();
+        }
+    }, []);
 
     // Detect mobile viewport
     useEffect(() => {
@@ -127,6 +136,10 @@ export default function ArtistCarousel() {
     }, [isPaused, goNext]);
 
     // Handle drag/swipe
+    const handleDragStart = () => {
+        isDragging.current = true;
+    };
+
     const handleDragEnd = (_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
         const threshold = 50;
         if (info.offset.x > threshold) {
@@ -134,6 +147,10 @@ export default function ArtistCarousel() {
         } else if (info.offset.x < -threshold) {
             goNext();
         }
+        // Reset drag state after a short delay to prevent click from firing
+        setTimeout(() => {
+            isDragging.current = false;
+        }, 100);
     };
 
     // Handle clicking on side images
@@ -154,6 +171,7 @@ export default function ArtistCarousel() {
             className="relative w-full h-44 md:h-56 mt-2 overflow-visible [transform-style:preserve-3d] [perspective:500px] md:overflow-x-clip md:overflow-y-visible md:[perspective:1000px] pb-12 md:pb-8 rounded-2xl cursor-grab active:cursor-grabbing"
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
+            onClick={handleClick}
             style={{
                 perspectiveOrigin: isMobile ? '50% 40%' : '50% 50%'
             }}
@@ -163,6 +181,7 @@ export default function ArtistCarousel() {
                 drag="x"
                 dragConstraints={{ left: 0, right: 0 }}
                 dragElastic={0.1}
+                onDragStart={handleDragStart}
                 onDragEnd={handleDragEnd}
                 style={{ transformStyle: 'preserve-3d' }}
             >
