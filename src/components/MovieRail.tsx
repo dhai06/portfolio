@@ -17,89 +17,105 @@ const movies = [
     { title: 'Movie Poster 4', poster: '/images/movies-shows/p27192445_v_v8_ab.jpg' },
 ];
 
-// Utility to wrap a number between a min and max range
 const wrap = (min: number, max: number, v: number) => {
     const rangeSize = max - min;
     return ((((v - min) % rangeSize) + rangeSize) % rangeSize) + min;
 };
 
 export default function MovieRail() {
-    // We only need 2 sets for this technique if the wrap logic is perfect, 
-    // but 3 sets (original + 2 copies) is safer for wide screens to avoid flickering edges.
+    // Create 3 sets - we'll start at the middle one for buffer on both sides
     const endlessMovies = [...movies, ...movies, ...movies];
-
-    const [isPaused, setIsPaused] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
     const [oneSetWidth, setOneSetWidth] = useState(0);
     const [isDragging, setIsDragging] = useState(false);
-    const dragStartX = useRef(0);
 
-    // This value tracks the "absolute" scroll position (can go to +/- infinity)
+    // Use ref instead of state to avoid re-renders and timing issues
+    const hasDraggedRef = useRef(false);
+
+    // Core Motion Values
     const baseX = useMotionValue(0);
+    const velocity = useMotionValue(0);
 
-    // Auto-scroll speed
-    const baseVelocity = -0.5;
+    // Configuration
+    const baseVelocity = -0.5; // Default crawl speed
+    const friction = 0.95;     // How quickly it slows down (0.9 to 0.99)
 
-    // Measure the width of one set of movies
     useEffect(() => {
         if (!containerRef.current) return;
         const firstMovie = containerRef.current.querySelector('.movie-item');
-
         if (firstMovie) {
-            // Calculate width: Element width + gap (16px / 1rem)
-            const movieWidth = firstMovie.clientWidth;
-            const gap = 16;
-            const totalWidth = (movieWidth + gap) * movies.length;
+            const totalWidth = (firstMovie.clientWidth + 16) * movies.length;
             setOneSetWidth(totalWidth);
+            // Start at the middle set to have buffer on both sides
+            baseX.set(-totalWidth);
         }
-    }, []);
+    }, [baseX]);
 
-    // The "Main Loop"
     useAnimationFrame((t, delta) => {
-        if (!oneSetWidth || isPaused) return;
+        if (!oneSetWidth) return;
 
-        // Move baseX by velocity
-        const moveBy = baseVelocity * (delta / 16); // Normalized delta
+        let currentVelocity = velocity.get();
+
+        // Always apply friction - this creates seamless transitions
+        currentVelocity *= friction;
+
+        // If the velocity gets very small, snap it to zero
+        if (Math.abs(currentVelocity) < 0.1) {
+            currentVelocity = 0;
+        }
+        velocity.set(currentVelocity);
+
+        // Final movement: Base crawl + current momentum
+        const moveBy = (baseVelocity + currentVelocity) * (delta / 16);
         baseX.set(baseX.get() + moveBy);
     });
 
-    // Transform the infinite baseX into a looping visual position
-    // We wrap between -oneSetWidth and 0. This works because we have 3 copies.
-    // When it scrolls past -oneSetWidth, it snaps back to 0 instantly.
     const x = useTransform(baseX, (v) => {
         if (!oneSetWidth) return 0;
-        return wrap(-oneSetWidth, 0, v);
+        // Wrap between -2*oneSetWidth and 0 (covers all 3 sets)
+        return wrap(-2 * oneSetWidth, 0, v);
     });
 
     return (
         <div className="relative w-full overflow-hidden py-8">
-            {/* Left/Right Fade Gradients */}
             <div className="absolute left-0 top-0 bottom-0 w-16 md:w-24 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
             <div className="absolute right-0 top-0 bottom-0 w-16 md:w-24 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
 
             <motion.div
                 ref={containerRef}
                 className="flex gap-4 px-16 md:px-24 w-max cursor-grab active:cursor-grabbing"
-                style={{ x, touchAction: 'pan-y' }} // Bind the transformed X value, enable touch on mobile
-                onMouseEnter={() => setIsPaused(true)}
-                onMouseLeave={() => setIsPaused(false)}
-                // We use onPan instead of drag. 
-                // onPan gives us the delta (movement) which we just add to our infinite number.
-                onPanStart={(e, info) => {
-                    dragStartX.current = info.point.x;
-                    setIsDragging(false);
-                }}
-                onPan={(e, info) => {
-                    baseX.set(baseX.get() + info.delta.x);
-                    // If the user has dragged more than 5px, mark it as a drag
-                    const dragDistance = Math.abs(info.point.x - dragStartX.current);
-                    if (dragDistance > 5) {
-                        setIsDragging(true);
+                style={{ x, touchAction: 'pan-y' }}
+                onClick={(e) => {
+                    // Stop propagation to parent PromptBlock if we dragged or moving fast
+                    if (hasDraggedRef.current || Math.abs(velocity.get()) > 0.5) {
+                        e.stopPropagation();
+                        e.preventDefault();
                     }
                 }}
-                onPanEnd={() => {
-                    // Reset isDragging after a short delay to prevent click events
-                    setTimeout(() => setIsDragging(false), 100);
+                onPanStart={() => {
+                    setIsDragging(true);
+                    hasDraggedRef.current = false;
+                }}
+                onPan={(e, info) => {
+                    // Track that an actual drag occurred
+                    if (Math.abs(info.offset.x) > 5) {
+                        hasDraggedRef.current = true;
+                    }
+                    // Only update position during drag, NOT velocity
+                    // This prevents the velocity from dipping during drag
+                    baseX.set(baseX.get() + info.delta.x);
+                }}
+                onPanEnd={(e, info) => {
+                    setIsDragging(false);
+                    // Set velocity only on release for seamless transition
+                    // info.velocity.x is px/ms. We scale it down to fit our loop
+                    const finalVelocity = info.velocity.x * 0.05;
+                    velocity.set(finalVelocity);
+
+                    // Clear hasDragged after a delay
+                    setTimeout(() => {
+                        hasDraggedRef.current = false;
+                    }, 150);
                 }}
             >
                 {endlessMovies.map((movie, index) => (
@@ -108,15 +124,16 @@ export default function MovieRail() {
                         className="relative flex-shrink-0 movie-item"
                         whileHover={{ scale: 1.05 }}
                         transition={{ duration: 0.2 }}
+                        onPointerDown={(e) => {
+                            // Reset on each pointer down
+                            hasDraggedRef.current = false;
+                        }}
                         onClick={(e) => {
-                            // Prevent opening details if user was dragging
-                            if (isDragging) {
+                            // Prevent click if we just dragged or velocity is high
+                            if (hasDraggedRef.current || Math.abs(velocity.get()) > 0.5) {
                                 e.preventDefault();
                                 e.stopPropagation();
-                                return;
                             }
-                            // Add your onClick handler here to open details modal
-                            // For example: onMovieClick?.(movie);
                         }}
                     >
                         <div className="relative w-32 h-48 md:w-40 md:h-60 rounded-xl overflow-hidden shadow-lg select-none">
