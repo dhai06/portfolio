@@ -189,7 +189,7 @@ export const portfolioData: CardData[] = [
             likeSummary: 'Project One screenshot',
             details: {
                 title: 'Project One',
-                description: 'A powerful application that solves real-world problems with elegant code.',
+                description: 'blank... for now',
                 tags: ['React', 'TypeScript', 'Node.js'],
                 relatedLinks: [{ label: 'View Demo', url: 'https://project-one-demo.com' }]
             }
@@ -197,12 +197,12 @@ export const portfolioData: CardData[] = [
         prompts: [
             {
                 question: 'What it does',
-                answer: 'Describe your first project and what problems it solves.',
+                answer: 'blank... for now',
                 id: 'proj1-prompt-1',
                 likeSummary: 'Project One: what it does',
                 details: {
                     title: 'Project Overview',
-                    description: 'This project tackles common pain points with innovative solutions.',
+                    description: 'blank... for now',
                     tags: ['Overview', 'Features']
                 }
             },
@@ -230,7 +230,7 @@ export const portfolioData: CardData[] = [
             likeSummary: 'Project Two screenshot',
             details: {
                 title: 'Project Two',
-                description: 'A full-stack application showcasing modern web development practices.',
+                description: 'blank... for now',
                 tags: ['Next.js', 'PostgreSQL', 'Tailwind'],
                 relatedLinks: [{ label: 'View Demo', url: 'https://project-two-demo.com' }]
             }
@@ -238,12 +238,12 @@ export const portfolioData: CardData[] = [
         prompts: [
             {
                 question: 'The challenge',
-                answer: 'Explain the main challenge or goal of this project.',
+                answer: 'blank... for now',
                 id: 'proj2-prompt-1',
                 likeSummary: 'Project Two: the challenge',
                 details: {
                     title: 'The Challenge',
-                    description: 'This project solved complex technical challenges with creative solutions.',
+                    description: 'blank... for now',
                     tags: ['Challenge', 'Problem Solving']
                 }
             },
@@ -271,7 +271,7 @@ export const portfolioData: CardData[] = [
             likeSummary: 'Project Three screenshot',
             details: {
                 title: 'Project Three',
-                description: 'A Python-based backend service demonstrating API design excellence.',
+                description: 'blank... for now',
                 tags: ['Python', 'FastAPI', 'Docker'],
                 relatedLinks: [{ label: 'View Demo', url: 'https://project-three-demo.com' }]
             }
@@ -279,12 +279,12 @@ export const portfolioData: CardData[] = [
         prompts: [
             {
                 question: 'Why I built this',
-                answer: 'Share your motivation and what you learned.',
+                answer: 'blank... for now',
                 id: 'proj3-prompt-1',
                 likeSummary: 'Project Three: motivation',
                 details: {
                     title: 'Motivation',
-                    description: 'Built to explore new technologies and push my development skills further.',
+                    description: 'blank... for now',
                     tags: ['Learning', 'Growth']
                 }
             },
@@ -312,19 +312,19 @@ export const portfolioData: CardData[] = [
             likeSummary: 'Contact photo',
             details: {
                 title: 'Contact',
-                description: 'Ready to connect and discuss opportunities.',
+                description: 'blank... for now',
                 tags: ['Contact', 'Networking']
             }
         }],
         prompts: [
             {
                 question: 'Reach out if',
-                answer: 'You have an exciting opportunity or just want to connect.',
+                answer: 'blank... for now',
                 id: 'contact-prompt-1',
                 likeSummary: 'Reach out invitation',
                 details: {
                     title: 'Reach Out',
-                    description: 'Always excited to discuss new projects, opportunities, or just to connect with fellow developers.',
+                    description: 'blank... for now',
                     tags: ['Contact', 'Opportunities']
                 }
             },
