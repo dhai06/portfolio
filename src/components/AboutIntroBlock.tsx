@@ -280,7 +280,7 @@ export default function AboutIntroBlock({ imageSrc, imageAlt, isLiked, onHeartCl
                         </div>
 
                         {/* Interests - Inline sliding pill */}
-                        <div className="flex flex-wrap items-center gap-4 gap-y-2">
+                        <div className="flex flex-col md:flex-row md:flex-wrap items-start md:items-center gap-4 gap-y-2">
                             <span className="text-base font-medium text-[var(--foreground)]/50 flex items-center gap-1 whitespace-normal">
                                 <Sparkles className="w-5 h-5" />
                                 Interests:
