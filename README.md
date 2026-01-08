@@ -16,21 +16,6 @@ This portfolio is designed to mimic a premium mobile app experience, featuring a
 *   **Animations**: [Framer Motion](https://www.framer.com/motion/)
 *   **Icons**: [Lucide React](https://lucide.dev/)
 
-## Getting Started
-
-1.  **Install dependencies**:
-    ```bash
-    npm install
-    # or
-    yarn install
-    ```
-2.  **Run the development server**:
-    ```bash
-    npm run dev
-    ```
-3.  **Open in browser**:
-    Navigate to [http://localhost:3000](http://localhost:3000).
-
 ## Project Structure
 *   `src/components`: UI components (Blocks, Modals, Rails).
 *   `src/data`: Portfolio content and data structure (`portfolioData.ts`).
