@@ -80,7 +80,7 @@ export default function MovieRail() {
             <motion.div
                 ref={containerRef}
                 className="flex gap-4 px-16 md:px-24 w-max cursor-grab active:cursor-grabbing"
-                style={{ x }} // Bind the transformed X value
+                style={{ x, touchAction: 'pan-y' }} // Bind the transformed X value, enable touch on mobile
                 onMouseEnter={() => setIsPaused(true)}
                 onMouseLeave={() => setIsPaused(false)}
                 // We use onPan instead of drag. 

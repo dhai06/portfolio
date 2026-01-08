@@ -102,7 +102,6 @@ export const portfolioData: CardData[] = [
                     title: 'Music Taste',
                     description: 'These are my favourite artists/bands, and my spotify wrapped from the last 4 years.',
                     tags: ['wave to earth', 'keshi', 'Jay Chou', 'yung kai', 'grentperez', 'Eric Chou', 'Crowd Lu', 'Jannabi', 'The Black Skirts', 'Nerd Connection'],
-                    // Add your images here - replace with your Spotify wrapped images
                     media: {
                         type: 'images',
                         images: [
@@ -116,13 +115,12 @@ export const portfolioData: CardData[] = [
             },
             {
                 question: 'My favourite shows and movies',
-                answer: 'another carousel animation?',
+                answer: '...',
                 id: 'about-prompt-4',
                 likeSummary: 'Favourite shows and movies',
                 details: {
-                    title: 'Entertainment',
-                    description: 'Love sci-fi, documentaries, and thought-provoking dramas.',
-                    tags: ['Movies', 'TV Shows', 'Entertainment']
+                    title: 'My favourite shows and movies',
+                    description: 'I\'ll add 2 tier lists, one for shows and one for movies ... eventually.',
                 }
             },
             {
