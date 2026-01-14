@@ -72,8 +72,8 @@ export default function MovieRail() {
 
     const x = useTransform(baseX, (v) => {
         if (!oneSetWidth) return 0;
-        // Wrap between -2*oneSetWidth and 0 (covers all 3 sets)
-        return wrap(-2 * oneSetWidth, 0, v);
+        // Wrap between -2*oneSetWidth and -oneSetWidth (loop to middle for seamless animation)
+        return wrap(-2 * oneSetWidth, -oneSetWidth, v);
     });
 
     return (
