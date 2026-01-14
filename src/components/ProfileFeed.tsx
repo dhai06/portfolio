@@ -6,7 +6,6 @@ import { AnimatePresence, motion, useInView } from 'framer-motion';
 import PhotoBlock from './PhotoBlock';
 import PromptBlock from './PromptBlock';
 import InfoPillsBlock from './InfoPillsBlock';
-// DetailsPage import removed
 import Menu from './Menu';
 import AboutIntroBlock from './AboutIntroBlock';
 import SummaryBlock from './SummaryBlock';
