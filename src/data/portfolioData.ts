@@ -41,7 +41,6 @@ export interface CardData {
     images: ImageItem[];
     prompts: PromptData[];
     infoPills: InfoPill[];
-    // Details page content (separate from main page) - REMOVED
     // Technical details (links, stack, etc.)
     details: {
         stack?: string[];
@@ -172,7 +171,6 @@ export const portfolioData: CardData[] = [
             { label: 'Skill 1' },
             { label: 'Skill 2' },
         ],
-        // DETAILS PAGE CONTENT REMOVED
         details: {
             stack: ['Skill 1', 'Skill 2', 'Skill 3'],
         },
@@ -211,7 +209,6 @@ export const portfolioData: CardData[] = [
             { label: 'Technology 1' },
             { label: 'Technology 2' },
         ],
-        // DETAILS PAGE CONTENT REMOVED
         details: {
             stack: ['React', 'TypeScript', 'Node.js'],
             github: 'https://github.com/yourusername/project-one',
@@ -252,7 +249,6 @@ export const portfolioData: CardData[] = [
             { label: 'Next.js' },
             { label: 'PostgreSQL' },
         ],
-        // DETAILS PAGE CONTENT REMOVED
         details: {
             stack: ['Next.js', 'PostgreSQL', 'Tailwind'],
             github: 'https://github.com/yourusername/project-two',
@@ -293,7 +289,6 @@ export const portfolioData: CardData[] = [
             { label: 'Python' },
             { label: 'FastAPI' },
         ],
-        // DETAILS PAGE CONTENT REMOVED
         details: {
             stack: ['Python', 'FastAPI', 'Docker'],
             github: 'https://github.com/yourusername/project-three',
@@ -333,7 +328,6 @@ export const portfolioData: CardData[] = [
             { label: 'Open to work' },
             { label: 'Available for freelance' },
         ],
-        // DETAILS PAGE CONTENT REMOVED
         details: {
             email: 'your.email@example.com',
             socials: [
