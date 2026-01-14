@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Heart, ExternalLink } from 'lucide-react';
+import { X, Heart, ExternalLink, ZoomIn } from 'lucide-react';
 import { ImageItem, PromptData, ItemDetails } from '@/data/portfolioData';
 import Image from 'next/image';
 
@@ -20,6 +20,7 @@ interface ItemDetailsModalProps {
 
 export default function ItemDetailsModal({ item, isLiked, onToggleLike, onClose }: ItemDetailsModalProps) {
     const details: ItemDetails | undefined = item.details;
+    const [zoomedImage, setZoomedImage] = useState<string | null>(null);
 
     // Lock body scroll when modal is open
     useEffect(() => {
@@ -55,13 +56,20 @@ export default function ItemDetailsModal({ item, isLiked, onToggleLike, onClose 
                 >
                     {/* Image preview for ImageItem */}
                     {isImageItem(item) && (
-                        <div className="relative w-full aspect-[16/10] rounded-t-3xl overflow-hidden">
+                        <div
+                            className="relative w-full aspect-[16/10] rounded-t-3xl overflow-hidden cursor-zoom-in group/zoom"
+                            onClick={() => setZoomedImage(item.src)}
+                        >
                             <Image
                                 src={item.src}
                                 alt={details.title}
                                 fill
+                                sizes="(max-width: 768px) 100vw, 512px"
                                 className="object-cover"
                             />
+                            <div className="absolute inset-0 bg-black/0 group-hover/zoom:bg-black/10 transition-colors flex items-center justify-center">
+                                <ZoomIn className="w-8 h-8 text-white opacity-0 group-hover/zoom:opacity-100 transition-opacity" />
+                            </div>
                         </div>
                     )}
 
@@ -110,15 +118,20 @@ export default function ItemDetailsModal({ item, isLiked, onToggleLike, onClose 
                                         {details.media.images.map((imgSrc, index) => (
                                             <div
                                                 key={index}
-                                                className="relative rounded-xl overflow-hidden bg-gray-50"
+                                                className="relative rounded-xl overflow-hidden bg-gray-50 cursor-zoom-in group/gallery aspect-square"
+                                                onClick={() => setZoomedImage(imgSrc)}
                                             >
                                                 <Image
                                                     src={imgSrc}
                                                     alt={`${details.title} image ${index + 1}`}
-                                                    width={300}
-                                                    height={300}
-                                                    className="w-full h-auto object-contain"
+                                                    fill
+                                                    sizes="(max-width: 768px) 50vw, 256px"
+                                                    loading="lazy"
+                                                    className="object-contain"
                                                 />
+                                                <div className="absolute inset-0 bg-black/0 group-hover/gallery:bg-black/10 transition-colors flex items-center justify-center">
+                                                    <ZoomIn className="w-6 h-6 text-gray-700 opacity-0 group-hover/gallery:opacity-100 transition-opacity" />
+                                                </div>
                                             </div>
                                         ))}
                                     </div>
@@ -188,6 +201,41 @@ export default function ItemDetailsModal({ item, isLiked, onToggleLike, onClose 
                         </div>
                     </div>
                 </motion.div>
+
+                {/* Zoom Lightbox */}
+                {zoomedImage && (
+                    <motion.div
+                        className="fixed inset-0 z-[90] bg-black/90 backdrop-blur-md flex items-center justify-center p-4"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={() => setZoomedImage(null)}
+                    >
+                        <button
+                            onClick={() => setZoomedImage(null)}
+                            className="absolute top-4 right-4 p-3 rounded-full bg-white/10 hover:bg-white/20 transition-colors z-10"
+                            aria-label="Close zoom"
+                        >
+                            <X className="w-6 h-6 text-white" />
+                        </button>
+                        <motion.div
+                            className="relative max-w-7xl max-h-[90vh] w-full h-full"
+                            initial={{ scale: 0.8 }}
+                            animate={{ scale: 1 }}
+                            exit={{ scale: 0.8 }}
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <Image
+                                src={zoomedImage}
+                                alt="Zoomed image"
+                                fill
+                                sizes="100vw"
+                                className="object-contain"
+                                priority
+                            />
+                        </motion.div>
+                    </motion.div>
+                )}
             </motion.div>
         </AnimatePresence>
     );
