@@ -213,6 +213,7 @@ export default function AboutIntroBlock({ imageSrc, imageAlt, isLiked, onHeartCl
                     src={imageSrc}
                     alt={imageAlt}
                     fill
+                    sizes="(max-width: 768px) 100vw, 40vw"
                     className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
                     priority
                 />
@@ -250,13 +251,15 @@ export default function AboutIntroBlock({ imageSrc, imageAlt, isLiked, onHeartCl
                         <div className="flex flex-wrap gap-3">
                             {/* UBC Pill */}
                             <div className="w-full sm:flex-1 min-w-0 flex items-center gap-3 bg-gray-100 px-4 py-3 rounded-xl">
-                                <img
-                                    src="/images/ubc-logo.png"
-                                    alt="UBC Logo"
-                                    width={28}
-                                    height={28}
-                                    className="object-contain flex-shrink-0"
-                                />
+                                <div className="relative w-7 h-7 flex-shrink-0">
+                                    <Image
+                                        src="/images/ubc-logo.png"
+                                        alt="UBC Logo"
+                                        fill
+                                        sizes="28px"
+                                        className="object-contain"
+                                    />
+                                </div>
                                 <div className="flex flex-col min-w-0">
                                     <span className="text-sm font-semibold text-[var(--foreground)] leading-tight break-words">Electrical Engineering</span>
                                     <span className="text-xs text-[var(--foreground)]/60 break-words">University of British Columbia</span>
@@ -265,13 +268,15 @@ export default function AboutIntroBlock({ imageSrc, imageAlt, isLiked, onHeartCl
 
                             {/* Formula UBC Pill */}
                             <div className="w-full sm:flex-1 min-w-0 flex items-center gap-3 bg-gray-100 px-4 py-3 rounded-xl">
-                                <img
-                                    src="/images/formula-ubc-logo.png"
-                                    alt="Formula UBC Logo"
-                                    width={28}
-                                    height={28}
-                                    className="object-contain flex-shrink-0"
-                                />
+                                <div className="relative w-7 h-7 flex-shrink-0">
+                                    <Image
+                                        src="/images/formula-ubc-logo.png"
+                                        alt="Formula UBC Logo"
+                                        fill
+                                        sizes="28px"
+                                        className="object-contain"
+                                    />
+                                </div>
                                 <div className="flex flex-col min-w-0">
                                     <span className="text-sm font-semibold text-[var(--foreground)] leading-tight break-words">Formula UBC</span>
                                     <span className="text-xs text-[var(--foreground)]/60 break-words">Aerodynamics</span>
@@ -344,11 +349,15 @@ export default function AboutIntroBlock({ imageSrc, imageAlt, isLiked, onHeartCl
                             <div className="flex flex-row items-center gap-3 md:flex-col md:items-start xl:flex-row xl:items-center">
                                 {/* Album art - real or placeholder */}
                                 {spotifyData?.albumImageUrl ? (
-                                    <img
-                                        src={spotifyData.albumImageUrl}
-                                        alt="Album art"
-                                        className="w-12 h-12 rounded-lg flex-shrink-0 object-cover"
-                                    />
+                                    <div className="relative w-12 h-12 rounded-lg flex-shrink-0 overflow-hidden">
+                                        <Image
+                                            src={spotifyData.albumImageUrl}
+                                            alt="Album art"
+                                            fill
+                                            sizes="48px"
+                                            className="object-cover"
+                                        />
+                                    </div>
                                 ) : (
                                     <div className="w-12 h-12 bg-gradient-to-br from-purple-400 to-pink-500 rounded-lg flex items-center justify-center flex-shrink-0">
                                         <Music2 className="w-6 h-6 text-white/80" />
