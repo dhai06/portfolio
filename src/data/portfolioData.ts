@@ -166,13 +166,9 @@ export const portfolioData: CardData[] = [
             },
         ],
         infoPills: [
-            { label: 'Your Title' },
-            { label: 'Location' },
-            { label: 'Skill 1' },
-            { label: 'Skill 2' },
+            { label: '' },
         ],
         details: {
-            stack: ['Skill 1', 'Skill 2', 'Skill 3'],
         },
     },
     {
@@ -181,38 +177,11 @@ export const portfolioData: CardData[] = [
         name: 'Project One',
         verified: false,
         // MAIN PAGE CONTENT
-        images: [{
-            src: '/images/placeholder.png',
-            id: 'proj1-img-1',
-            likeSummary: 'Project One screenshot',
-            details: {
-                title: 'Project One',
-                description: 'blank... for now',
-                tags: ['React', 'TypeScript', 'Node.js'],
-                relatedLinks: [{ label: 'View Demo', url: 'https://project-one-demo.com' }]
-            }
-        }],
-        prompts: [
-            {
-                question: 'What it does',
-                answer: 'blank... for now',
-                id: 'proj1-prompt-1',
-                likeSummary: 'Project One: what it does',
-                details: {
-                    title: 'Project Overview',
-                    description: 'blank... for now',
-                    tags: ['Overview', 'Features']
-                }
-            },
-        ],
-        infoPills: [
-            { label: 'Technology 1' },
-            { label: 'Technology 2' },
-        ],
+        images: [],
+        prompts: [],
+        infoPills: [],
         details: {
-            stack: ['React', 'TypeScript', 'Node.js'],
-            github: 'https://github.com/yourusername/project-one',
-            demo: 'https://project-one-demo.com',
+            stack: [],
         },
     },
     {
@@ -221,38 +190,11 @@ export const portfolioData: CardData[] = [
         name: 'Project Two',
         verified: false,
         // MAIN PAGE CONTENT
-        images: [{
-            src: '/images/placeholder.png',
-            id: 'proj2-img-1',
-            likeSummary: 'Project Two screenshot',
-            details: {
-                title: 'Project Two',
-                description: 'blank... for now',
-                tags: ['Next.js', 'PostgreSQL', 'Tailwind'],
-                relatedLinks: [{ label: 'View Demo', url: 'https://project-two-demo.com' }]
-            }
-        }],
-        prompts: [
-            {
-                question: 'The challenge',
-                answer: 'blank... for now',
-                id: 'proj2-prompt-1',
-                likeSummary: 'Project Two: the challenge',
-                details: {
-                    title: 'The Challenge',
-                    description: 'blank... for now',
-                    tags: ['Challenge', 'Problem Solving']
-                }
-            },
-        ],
-        infoPills: [
-            { label: 'Next.js' },
-            { label: 'PostgreSQL' },
-        ],
+        images: [],
+        prompts: [],
+        infoPills: [],
         details: {
-            stack: ['Next.js', 'PostgreSQL', 'Tailwind'],
-            github: 'https://github.com/yourusername/project-two',
-            demo: 'https://project-two-demo.com',
+            stack: [],
         },
     },
     {
@@ -261,38 +203,11 @@ export const portfolioData: CardData[] = [
         name: 'Project Three',
         verified: false,
         // MAIN PAGE CONTENT
-        images: [{
-            src: '/images/placeholder.png',
-            id: 'proj3-img-1',
-            likeSummary: 'Project Three screenshot',
-            details: {
-                title: 'Project Three',
-                description: 'blank... for now',
-                tags: ['Python', 'FastAPI', 'Docker'],
-                relatedLinks: [{ label: 'View Demo', url: 'https://project-three-demo.com' }]
-            }
-        }],
-        prompts: [
-            {
-                question: 'Why I built this',
-                answer: 'blank... for now',
-                id: 'proj3-prompt-1',
-                likeSummary: 'Project Three: motivation',
-                details: {
-                    title: 'Motivation',
-                    description: 'blank... for now',
-                    tags: ['Learning', 'Growth']
-                }
-            },
-        ],
-        infoPills: [
-            { label: 'Python' },
-            { label: 'FastAPI' },
-        ],
+        images: [],
+        prompts: [],
+        infoPills: [],
         details: {
-            stack: ['Python', 'FastAPI', 'Docker'],
-            github: 'https://github.com/yourusername/project-three',
-            demo: 'https://project-three-demo.com',
+            stack: [],
         },
     },
     {
@@ -308,7 +223,7 @@ export const portfolioData: CardData[] = [
             details: {
                 title: 'Contact',
                 description: 'blank... for now',
-                tags: ['Contact', 'Networking']
+                tags: []
             }
         }],
         prompts: [
@@ -320,21 +235,13 @@ export const portfolioData: CardData[] = [
                 details: {
                     title: 'Reach Out',
                     description: 'blank... for now',
-                    tags: ['Contact', 'Opportunities']
+                    tags: []
                 }
             },
         ],
         infoPills: [
-            { label: 'Open to work' },
-            { label: 'Available for freelance' },
         ],
         details: {
-            email: 'your.email@example.com',
-            socials: [
-                { label: 'Twitter', url: 'https://twitter.com/yourusername' },
-                { label: 'LinkedIn', url: 'https://linkedin.com/in/yourusername' },
-                { label: 'GitHub', url: 'https://github.com/yourusername' },
-            ],
         },
     },
 ];
