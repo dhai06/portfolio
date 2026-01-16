@@ -201,9 +201,10 @@ export default function ArtistCarousel() {
                             onClick={() => isClickable && handleImageClick(distance)}
                             style={{
                                 transformStyle: 'preserve-3d',
-                                boxShadow: distance === 0
-                                    ? '0 25px 50px -12px rgba(0, 0, 0, 0.4)'
-                                    : '0 10px 30px -10px rgba(0, 0, 0, 0.3)',
+                                // Use filter drop-shadow instead of box-shadow - NOT clipped by overflow:hidden
+                                filter: distance === 0
+                                    ? 'drop-shadow(0 25px 25px rgba(0, 0, 0, 0.35))'
+                                    : 'drop-shadow(0 10px 15px rgba(0, 0, 0, 0.25))',
                             }}
                         >
                             <Image
