@@ -3,19 +3,24 @@
 import { motion, useAnimationFrame, useMotionValue, useTransform } from 'framer-motion';
 import Image from 'next/image';
 import { useRef, useState, useEffect } from 'react';
-import { movieImages } from '@/lib/imagePreloader';
+import { skillImages } from '@/lib/imagePreloader';
 
-const movies = [
-    { title: "Howl's Moving Castle", poster: movieImages[0] },
-    { title: 'Movie Poster 1', poster: movieImages[1] },
-    { title: 'Movie Poster 2', poster: movieImages[2] },
-    { title: 'Movie Poster 3', poster: movieImages[3] },
-    { title: 'Our Beloved Summer', poster: movieImages[4] },
-    { title: 'Show Poster', poster: movieImages[5] },
-    { title: 'When Life Gives You Tangerines', poster: movieImages[6] },
-    { title: 'Fresh Off The Boat', poster: movieImages[7] },
-    { title: 'Show Poster 2', poster: movieImages[8] },
-    { title: 'Movie Poster 4', poster: movieImages[9] },
+const skills = [
+    { name: 'C++', icon: skillImages[0] },
+    { name: 'C', icon: skillImages[1] },
+    { name: 'Python', icon: skillImages[2] },
+    { name: 'SolidWorks', icon: skillImages[3] },
+    { name: 'GitHub', icon: skillImages[4] },
+    { name: 'Excel', icon: skillImages[5] },
+    { name: 'SystemVerilog', icon: skillImages[6] },
+    { name: 'MATLAB', icon: skillImages[7] },
+    { name: 'Altium', icon: skillImages[8] },
+    { name: 'AutoCAD', icon: skillImages[9] },
+    { name: 'TypeScript', icon: skillImages[10] },
+    { name: 'React', icon: skillImages[11] },
+    { name: 'Next.js', icon: skillImages[12] },
+    { name: 'RISC-V', icon: skillImages[13] },
+    { name: 'Jira', icon: skillImages[14] },
 ];
 
 const wrap = (min: number, max: number, v: number) => {
@@ -23,11 +28,12 @@ const wrap = (min: number, max: number, v: number) => {
     return ((((v - min) % rangeSize) + rangeSize) % rangeSize) + min;
 };
 
-export default function MovieRail() {
+export default function SkillsRail() {
     // Create 3 sets - we'll start at the middle one for buffer on both sides
-    const endlessMovies = [...movies, ...movies, ...movies];
+    const endlessSkills = [...skills, ...skills, ...skills];
     const containerRef = useRef<HTMLDivElement>(null);
     const [oneSetWidth, setOneSetWidth] = useState(0);
+
     // Use refs instead of state to avoid re-renders and timing issues
     const isDraggingRef = useRef(false);
     const hasDraggedRef = useRef(false);
@@ -42,9 +48,9 @@ export default function MovieRail() {
 
     useEffect(() => {
         if (!containerRef.current) return;
-        const firstMovie = containerRef.current.querySelector('.movie-item');
-        if (firstMovie) {
-            const totalWidth = (firstMovie.clientWidth + 16) * movies.length;
+        const firstSkill = containerRef.current.querySelector('.skill-item');
+        if (firstSkill) {
+            const totalWidth = (firstSkill.clientWidth + 16) * skills.length;
             setOneSetWidth(totalWidth);
             // Start at the middle set to have buffer on both sides
             baseX.set(-totalWidth);
@@ -105,13 +111,11 @@ export default function MovieRail() {
                         hasDraggedRef.current = true;
                     }
                     // Only update position during drag, NOT velocity
-                    // This prevents the velocity from dipping during drag
                     baseX.set(baseX.get() + info.delta.x);
                 }}
                 onPanEnd={(e, info) => {
                     isDraggingRef.current = false;
                     // Set velocity only on release for seamless transition
-                    // info.velocity.x is px/ms. We scale it down to fit our loop
                     const finalVelocity = info.velocity.x * 0.05;
                     velocity.set(finalVelocity);
 
@@ -121,13 +125,13 @@ export default function MovieRail() {
                     }, 150);
                 }}
             >
-                {endlessMovies.map((movie, index) => (
+                {endlessSkills.map((skill, index) => (
                     <motion.div
-                        key={`${movie.title}-${index}`}
-                        className="relative flex-shrink-0 movie-item"
+                        key={`${skill.name}-${index}`}
+                        className="relative flex-shrink-0 skill-item"
                         whileHover={{ scale: 1.05 }}
                         transition={{ duration: 0.2 }}
-                        onPointerDown={(e) => {
+                        onPointerDown={() => {
                             // Reset on each pointer down
                             hasDraggedRef.current = false;
                         }}
@@ -139,18 +143,21 @@ export default function MovieRail() {
                             }
                         }}
                     >
-                        <div className="relative w-32 h-48 md:w-40 md:h-60 rounded-xl overflow-hidden shadow-lg select-none">
+                        <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-xl overflow-hidden shadow-lg select-none bg-gray-50 flex items-center justify-center p-2">
                             <Image
-                                src={movie.poster}
-                                alt={movie.title}
+                                src={skill.icon}
+                                alt={skill.name}
                                 fill
-                                className="object-cover pointer-events-none"
-                                sizes="(max-width: 768px) 128px, 160px"
+                                className="object-contain pointer-events-none p-2"
+                                sizes="(max-width: 768px) 80px, 96px"
                                 draggable={false}
                                 priority
                                 loading="eager"
                             />
                         </div>
+                        <p className="text-center text-xs md:text-sm font-medium text-gray-600 mt-2 select-none">
+                            {skill.name}
+                        </p>
                     </motion.div>
                 ))}
             </motion.div>

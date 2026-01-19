@@ -3,21 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, PanInfo } from 'framer-motion';
 import Image from 'next/image';
-
-// Artist images from the favourite artists folder
-const artistImages = [
-    '/images/favourite artists/0x1900-000000-80-0-0 (1).jpg',
-    '/images/favourite artists/0x1900-000000-80-0-0.jpg',
-    '/images/favourite artists/5d2cfd9f2b02809c420d2386cccbe0da.1000x1000x1.png',
-    '/images/favourite artists/Cover_of_The_Black_Skirts\'s_album_Team_Baby.png',
-    '/images/favourite artists/Eric_Chou_The_Chaos_After_You_album_artwork.jpg',
-    '/images/favourite artists/GD00068962.default.1.jpg',
-    '/images/favourite artists/Legend,_album_cover,_March_2019.jpg',
-    '/images/favourite artists/ab67616d0000b2733138f891f3075c9c5d944037.jpg',
-    '/images/favourite artists/ab67616d0000b273c091fe6573f073f2e31b249f.jpg',
-    '/images/favourite artists/https___images.genius.com_662eb5996444b8308d9368f9794c7a26.1000x1000x1.png',
-    '/images/favourite artists/images.jpg',
-];
+import { artistImages } from '@/lib/imagePreloader';
 
 // Calculate circular distance (shortest path around the ring)
 function getCircularDistance(index: number, currentIndex: number, total: number): number {
@@ -213,7 +199,8 @@ export default function ArtistCarousel() {
                                 fill
                                 className="object-cover pointer-events-none"
                                 sizes="(max-width: 768px) 112px, 224px"
-                                priority={Math.abs(distance) <= 1}
+                                priority
+                                loading="eager"
                             />
                         </motion.div>
                     );

@@ -93,6 +93,17 @@ export const portfolioData: CardData[] = [
                 }
             },
             {
+                question: 'My skills and technologies',
+                answer: '...',
+                id: 'about-prompt-skills',
+                likeSummary: 'Technical skills',
+                details: {
+                    title: 'Skills & Technologies',
+                    description: 'A collection of programming languages, tools, and technologies I work with.',
+                    tags: ['C++', 'C', 'Python', 'TypeScript', 'React', 'Next.js', 'MATLAB', 'SystemVerilog', 'Altium', 'SolidWorks', 'AutoCAD', 'Git', 'Docker', 'Excel', 'Jira']
+                }
+            },
+            {
                 question: 'My music taste',
                 answer: 'maybe do a carousel animation below this?',
                 id: 'about-prompt-3',

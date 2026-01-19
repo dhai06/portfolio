@@ -6,6 +6,7 @@ import { PromptData } from '@/data/portfolioData';
 import TypewriterText from './TypewriterText';
 import ArtistCarousel from './ArtistCarousel';
 import MovieRail from './MovieRail';
+import SkillsRail from './SkillsRail';
 
 interface PromptBlockProps {
     prompt: PromptData;
@@ -24,9 +25,16 @@ const isMoviePrompt = (question: string) => {
     return lower.includes('movie') || lower.includes('show') || lower.includes('tv');
 };
 
+// Check if this prompt should show the skills rail
+const isSkillsPrompt = (question: string) => {
+    const lower = question.toLowerCase();
+    return lower.includes('skill') || lower.includes('technologies') || lower.includes('tech stack');
+};
+
 export default function PromptBlock({ prompt, isLiked, onHeartClick, onBlockClick }: PromptBlockProps) {
     const showArtistCarousel = isArtistPrompt(prompt.question);
     const showMovieRail = isMoviePrompt(prompt.question);
+    const showSkillsRail = isSkillsPrompt(prompt.question);
 
     return (
         <div
@@ -38,6 +46,8 @@ export default function PromptBlock({ prompt, isLiked, onHeartClick, onBlockClic
                 <ArtistCarousel />
             ) : showMovieRail ? (
                 <MovieRail />
+            ) : showSkillsRail ? (
+                <SkillsRail />
             ) : (
                 <p className="text-xl md:text-3xl font-serif font-bold text-[var(--foreground)] leading-tight break-words">
                     <TypewriterText text={prompt.answer} />

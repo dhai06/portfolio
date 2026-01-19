@@ -216,6 +216,7 @@ export default function AboutIntroBlock({ imageSrc, imageAlt, isLiked, onHeartCl
                     sizes="(max-width: 768px) 100vw, 40vw"
                     className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
                     priority
+                    loading="eager"
                 />
             </motion.div>
 
