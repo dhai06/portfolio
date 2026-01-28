@@ -294,7 +294,7 @@ export const portfolioData: CardData[] = [
                 likeSummary: 'Manufacturing...',
                 image: {
                     kind: 'image',
-                    src: '/images/projects/fubc/manu.jpg',
+                    src: '/images/projects/fubc/manu.JPG',
                     objectFit: 'cover',
                     objectPosition: 'center 100%',
                 },
@@ -368,7 +368,7 @@ export const portfolioData: CardData[] = [
                         description: 'Mango is a full body gesture controlled Minecraft controller that uses only a webcam to track the player\'s real world actions and translate them into in-game inputs. It was built in 24 hours and won 1st place at HelloHacks 2025! By using various gesture detection functions, normalizing all measurements, and using a state manager, we were able to achieve a high degree of accuracy in gesture recognition. Now you can play minecraft by just moving your body! Check out our Devpost and Github below, and make sure to watch the promo vid.',
                         media: {
                         type: 'images',
-                        images: ['/images/projects/personal/mango/mango1.png', '/images/projects/personal/mango/mango2.png', '/images/projects/personal/mango/mango3.JPG', '/images/projects/personal/mango/mango4.JPG', '/images/projects/personal/mango/mango5.MOV'],
+                        images: ['/images/projects/personal/mango/mango1.png', '/images/projects/personal/mango/mango2.png', '/images/projects/personal/mango/mango3.JPG', '/images/projects/personal/mango/mango4.JPG', '/images/projects/personal/mango/mango5.mov'],
                     },
                     tags: ['OpenCV', 'MediaPipe', 'Minecraft'],
                     relatedLinks:[{ label: 'GitHub', url: 'https://github.com/minjunminji/minecraftCVcontroller'},{label: 'Devpost', url: 'https://devpost.com/software/mango-full-body-gesture-control-for-any-game'}, {label: 'Promo Video', url: 'https://drive.google.com/file/d/1s0_MoA5PT2xQSSJlm68Q3fTFOwgnqBa2/view'}],
