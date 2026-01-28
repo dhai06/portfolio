@@ -19,6 +19,9 @@ const playfair = Playfair_Display({
 export const metadata: Metadata = {
   title: "dhai",
   description: "Daniel Hai's Portfolio",
+  openGraph: {
+    images: ['/favicon.ico'],
+  },
 };
 
 export default function RootLayout({
