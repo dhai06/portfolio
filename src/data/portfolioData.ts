@@ -82,7 +82,7 @@ export const portfolioData: CardData[] = [
                 likeSummary: 'My about me',
                 details: {
                     title: 'My interests',
-                    description: 'hint: tap the blocks to see more details or press the heart to also like it :)',
+                    description: 'hint: tap the blocks to see more details or press the heart to also like it. You\'ll see a summary of what you liked at the end :)',
                     tags: ['Random Projects', 'Formula 1', 'Cooking', 'Swimming', 'Fashion', 'Working Out', 'Playing Piano', 'Discovering Restaurants', 'Mechanical Keyboards', 'Watching TV Shows']
                 },
                 image: {
