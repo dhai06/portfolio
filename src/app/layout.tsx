@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   title: "dhai",
   description: "Daniel Hai's Portfolio",
   openGraph: {
-    images: ['/images/web-app-manifest-512x512.png'],
+    images: ['/web-app-manifest-512x512.png'],
   },
 };
 
