@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo } from 'react';
 import TypewriterText from './TypewriterText';
 import { HeartButton } from './ui';
 import { LocationTimeWidget, SpotifyWidget, InterestsPill, SocialLinks } from './about';
@@ -17,7 +17,11 @@ interface AboutIntroBlockProps {
     onBlockClick?: () => void;
 }
 
-export default function AboutIntroBlock({
+/**
+ * AboutIntroBlock - Memoized hero block for the about page
+ * First block - uses priority loading for above-the-fold image
+ */
+const AboutIntroBlock = memo(function AboutIntroBlock({
     imageSrc,
     imageAlt,
     isLiked,
@@ -172,4 +176,6 @@ export default function AboutIntroBlock({
             </motion.div>
         </div>
     );
-}
+});
+
+export default AboutIntroBlock;

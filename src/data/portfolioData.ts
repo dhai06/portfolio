@@ -71,7 +71,7 @@ export const portfolioData: CardData[] = [
     {
         id: '1',
         type: 'about',
-        name: 'WIP - Daniel Hai - WIP',
+        name: 'Daniel Hai',
         blocks: [
             // Intro paired block - image left, intro content right
             {
@@ -230,10 +230,10 @@ export const portfolioData: CardData[] = [
                 },
                 details: {
                     title: 'Formula UBC',
-                    description: 'Formula UBC is a student-run Formula SAE team at the University of British Columbia. We are a small team of about 10 students, and we are currently working on a data acquisition system for the car.',
-                    //tags: ['Data Acquisition', 'Website', 'Formula SAE'],
-                }
+                    description: 'Formula UBC is a Formula SAE team at the University of British Columbia. We are a team of about 80 students, and we design and build a formula style race car from scratch every year to bring to competition in May of every year at Michigan International Speedway. Check out our website or Instagram to learn more!',
+                    relatedLinks:[{ label: 'Website', url: 'https://www.formulaubc.com/'}, { label: 'Instagram', url: 'https://www.instagram.com/formula.ubc/'}]
             },
+        },
             // Example: paired block with prompt left, image right (alternating)
             {
                 kind: 'paired',
@@ -284,24 +284,24 @@ export const portfolioData: CardData[] = [
                         type: 'images', 
                         images: ['/images/projects/fubc/fw2.png','/images/projects/fubc/fw4.jpg','/images/projects/fubc/manu1.jpg', '/images/projects/fubc/fw3.png'],
                     },
-                    tags: ['SolidWorks', 'STAR-CCM+', 'CFD', 'Carbon Fiber', 'Manufacturing'],
+                    tags: ['SolidWorks', 'STAR-CCM+', 'CFD', 'Carbon Fiber'],
                 },
             },
             {
                 kind: 'paired', 
                 layout: 'image-right',   
                 id: 'fubc-manu',
-                likeSummary: 'Aero Manufacturing!',
+                likeSummary: 'Manufacturing...',
                 image: {
                     kind: 'image',
                     src: '/images/projects/fubc/manu.jpg',
                     objectFit: 'cover',
-                    objectPosition: 'center 30%',
+                    objectPosition: 'center 100%',
                 },
                 prompt: {
                     kind: 'prompt',
                     question: 'Manufacturing...',
-                    answer: 'So much carbon and MDF dust... ',
+                    answer: 'There\'s carbon fiber in my veins... ',
                     contentType: 'text',
                 },
                 details: {
@@ -311,7 +311,7 @@ export const portfolioData: CardData[] = [
                         type: 'images', 
                         images: ['/images/projects/fubc/manu2.PNG', 'images/projects/fubc/manu1.jpg'],
                     },
-                    tags: ['SolidWorks', 'STAR-CCM+', 'CFD', 'Carbon Fiber', 'Manufacturing'],
+                    tags: ['CNC Machining', 'Carbon Fiber'],
                 }
             }
         ],
@@ -324,24 +324,35 @@ export const portfolioData: CardData[] = [
             {
                 kind: 'paired',
                 layout: 'image-left',
-                id: 'project2-overview',
-                likeSummary: 'Project Two overview',
+                id: 'kbd',
+                likeSummary: 'My custom mechanical keyboard',
                 image: {
                     kind: 'image',
-                    src: '/images/placeholder.png',
+                    src: '/images/projects/personal/kbd/3d_top.png',
+                    objectFit: 'contain',
                 },
                 prompt: {
                     kind: 'prompt',
-                    question: 'What is this project?',
-                    answer: 'Project Two description goes here...',
+                    question: 'A very expensive hobby',
+                    answer: 'This mechanical keyboard was designed completely from scratch, including the PCB and firmware',
                     contentType: 'text',
+                },
+                details: {
+                    title: 'Custom Mechanical Keyboard',
+                    description: 'My obsession with keyboards started sometime in high school from playing video games, and since then I\'ve build 2 other keyboards, and designed this custom one. It\'s a 75% keyboard with a small OLED display, a MACRO column, USB-C connection, and a scroll wheel. This board is STM32 based, uses I2C to communicate with the OLED, interrupts to process encoder inputs, and a polling rate of 1kHz. Checkout the GitHub below!',
+                    media:{
+                        type: 'images', 
+                        images: ['/images/projects/personal/kbd/3d_bot.png', '/images/projects/personal/kbd/bot_pcb.png','/images/projects/personal/kbd/top_pcb.png','/images/projects/personal/kbd/matrix.png','/images/projects/personal/kbd/root.png'],
+                    },
+                    tags: ['CNC Machining', 'Carbon Fiber'],
+                    relatedLinks:[{ label: 'GitHub', url: 'https://github.com/dhai06/kbd_firmware'}],
                 }
             },
             {
                 kind: 'paired',
                 layout: 'image-right',
-                id: 'project2-features',
-                likeSummary: 'Project Two features',
+                id: 'mango',
+                likeSummary: 'Mango: Gesture Controlled Minecraft',
                 image: {
                     kind: 'image',
                     src: '/images/placeholder.png',
@@ -351,49 +362,23 @@ export const portfolioData: CardData[] = [
                     question: 'Key features',
                     answer: 'Feature description goes here...',
                     contentType: 'text',
+                },
+                details: {  
+                    title: 'Mango: Gesture Controlled Minecraft',
+                        description: 'Mango is a full body gesture controlled Minecraft controller that uses only a webcam to track the player\'s real world actions and translate them into in-game inputs. It was built in 24 hours and won 1st place at HelloHacks 2025! By using various gesture detection functions, normalizing all measurements, and using a simple state manager, we were able to achieve a high degree of accuracy in gesture recognition. Now you can play minecraft by just moving your body! Check out our Devpost and Github below, and make sure to watch the promo vid.',
+                        media: {
+                        type: 'images',
+                        images: ['/images/projects/personal/mango/mango1.png', '/images/projects/personal/mango/mango2.png', '/images/projects/personal/mango/mango3.png'],
+                    },
+                    tags: ['OpenCV', 'MediaPipe', 'Minecraft'],
+                    relatedLinks:[{ label: 'GitHub', url: 'https://github.com/minjunminji/minecraftCVcontroller'},{label: 'Devpost', url: 'https://devpost.com/software/mango-full-body-gesture-control-for-any-game'}, {label: 'Promo Video', url: 'https://drive.google.com/file/d/1s0_MoA5PT2xQSSJlm68Q3fTFOwgnqBa2/view'}],
                 }
+                
             },
         ],
     },
-    {
-        id: '4',
-        type: 'project',
-        name: 'Project Three',
-        blocks: [
-            {
-                kind: 'paired',
-                layout: 'image-left',
-                id: 'project3-overview',
-                likeSummary: 'Project Three overview',
-                image: {
-                    kind: 'image',
-                    src: '/images/placeholder.png',
-                },
-                prompt: {
-                    kind: 'prompt',
-                    question: 'What is this project?',
-                    answer: 'Project Three description goes here...',
-                    contentType: 'text',
-                }
-            },
-            {
-                kind: 'paired',
-                layout: 'image-right',
-                id: 'project3-features',
-                likeSummary: 'Project Three features',
-                image: {
-                    kind: 'image',
-                    src: '/images/placeholder.png',
-                },
-                prompt: {
-                    kind: 'prompt',
-                    question: 'Key features',
-                    answer: 'Feature description goes here...',
-                    contentType: 'text',
-                }
-            },
-        ],
-    },
+   
+
     {
         id: '5',
         type: 'contact',

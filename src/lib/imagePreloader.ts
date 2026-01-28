@@ -53,11 +53,36 @@ export const allPreloadImages = [
     ...movieImages,
 ];
 
-// Preload a single image and return a promise
+// Cache to track which images have been preloaded
+const preloadedImages = new Set<string>();
+
+// Track loading state per carousel type
+const carouselLoadingState = {
+    artist: { loaded: false, loading: false },
+    skills: { loaded: false, loading: false },
+    movie: { loaded: false, loading: false },
+};
+
+// Concurrency limit to prevent network saturation
+const DEFAULT_CONCURRENCY = 4;
+
+/**
+ * Preload a single image and return a promise
+ * Uses native Image constructor for fastest preloading
+ */
 function preloadImage(src: string): Promise<void> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
+        // Skip if already preloaded
+        if (preloadedImages.has(src)) {
+            resolve();
+            return;
+        }
+
         const img = new Image();
-        img.onload = () => resolve();
+        img.onload = () => {
+            preloadedImages.add(src);
+            resolve();
+        };
         img.onerror = () => {
             console.warn(`Failed to preload image: ${src}`);
             resolve(); // Resolve anyway to not block other images
@@ -66,52 +91,116 @@ function preloadImage(src: string): Promise<void> {
     });
 }
 
-// Preload all images and return a promise that resolves when all are loaded
-export async function preloadAllImages(
-    images: string[] = allPreloadImages,
+/**
+ * Preload images with controlled concurrency to prevent network saturation
+ * Based on best practice: bundle-preload (preload based on user intent)
+ */
+async function preloadWithConcurrency(
+    images: string[],
+    concurrency: number = DEFAULT_CONCURRENCY,
     onProgress?: (loaded: number, total: number) => void
 ): Promise<void> {
     let loaded = 0;
     const total = images.length;
 
-    const promises = images.map(async (src) => {
+    // Filter out already preloaded images
+    const imagesToLoad = images.filter(src => !preloadedImages.has(src));
+    
+    if (imagesToLoad.length === 0) {
+        onProgress?.(total, total);
+        return;
+    }
+
+    // Update progress for already loaded images
+    loaded = total - imagesToLoad.length;
+    onProgress?.(loaded, total);
+
+    // Create batches based on concurrency limit
+    const queue = [...imagesToLoad];
+    const activePromises: Promise<void>[] = [];
+
+    const processNext = async (): Promise<void> => {
+        if (queue.length === 0) return;
+
+        const src = queue.shift()!;
         await preloadImage(src);
         loaded++;
         onProgress?.(loaded, total);
-    });
 
-    await Promise.all(promises);
+        // Process next item if queue not empty
+        if (queue.length > 0) {
+            return processNext();
+        }
+    };
+
+    // Start initial batch of concurrent loads
+    for (let i = 0; i < Math.min(concurrency, queue.length); i++) {
+        activePromises.push(processNext());
+    }
+
+    await Promise.all(activePromises);
 }
-
-// Cache to track which images have been preloaded
-const preloadedImages = new Set<string>();
 
 // Check if an image has been preloaded
 export function isImagePreloaded(src: string): boolean {
     return preloadedImages.has(src);
 }
 
-// Mark an image as preloaded
+// Mark an image as preloaded (for images loaded via Next.js Image)
 export function markImagePreloaded(src: string): void {
     preloadedImages.add(src);
 }
 
-// Preload images and track them in the cache
+/**
+ * Preload all carousel images with concurrency control
+ * This is the main function called by ImagePreloadProvider
+ */
 export async function preloadAndCacheImages(
     images: string[] = allPreloadImages,
     onProgress?: (loaded: number, total: number) => void
 ): Promise<void> {
-    let loaded = 0;
-    const total = images.length;
+    await preloadWithConcurrency(images, DEFAULT_CONCURRENCY, onProgress);
+}
 
-    const promises = images.map(async (src) => {
-        if (!preloadedImages.has(src)) {
-            await preloadImage(src);
-            preloadedImages.add(src);
-        }
-        loaded++;
-        onProgress?.(loaded, total);
-    });
+/**
+ * Preload specific carousel images on demand
+ * Call this when a carousel becomes visible for the first time
+ */
+export async function preloadCarouselImages(
+    type: 'artist' | 'skills' | 'movie'
+): Promise<void> {
+    const state = carouselLoadingState[type];
+    
+    // Skip if already loaded or currently loading
+    if (state.loaded || state.loading) {
+        return;
+    }
 
-    await Promise.all(promises);
+    state.loading = true;
+
+    const imageMap = {
+        artist: artistImages,
+        skills: skillImages,
+        movie: movieImages,
+    };
+
+    await preloadWithConcurrency(imageMap[type], DEFAULT_CONCURRENCY);
+    
+    state.loaded = true;
+    state.loading = false;
+}
+
+/**
+ * Check if a specific carousel's images are loaded
+ */
+export function isCarouselLoaded(type: 'artist' | 'skills' | 'movie'): boolean {
+    return carouselLoadingState[type].loaded;
+}
+
+// Legacy function - kept for backward compatibility
+export async function preloadAllImages(
+    images: string[] = allPreloadImages,
+    onProgress?: (loaded: number, total: number) => void
+): Promise<void> {
+    await preloadWithConcurrency(images, DEFAULT_CONCURRENCY, onProgress);
 }

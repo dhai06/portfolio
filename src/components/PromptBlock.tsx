@@ -1,5 +1,6 @@
 'use client';
 
+import { memo } from 'react';
 import { PromptData } from '@/data/portfolioData';
 import { HeartButton } from './ui';
 import TypewriterText from './TypewriterText';
@@ -65,7 +66,11 @@ function renderContent(prompt: PromptData) {
     );
 }
 
-export default function PromptBlock({
+/**
+ * PromptBlock - Memoized component for standalone prompt display
+ * Handles various content types including carousels
+ */
+const PromptBlock = memo(function PromptBlock({
     prompt,
     isLiked,
     onHeartClick,
@@ -87,4 +92,6 @@ export default function PromptBlock({
             />
         </div>
     );
-}
+});
+
+export default PromptBlock;

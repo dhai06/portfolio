@@ -1,7 +1,9 @@
 'use client';
 
+import { memo } from 'react';
 import Image from 'next/image';
 import { HeartButton } from './ui';
+import TypewriterText from './TypewriterText';
 import type { PairedBlock as PairedBlockType } from '@/data/types';
 
 interface PairedBlockProps {
@@ -16,7 +18,11 @@ interface PairedBlockProps {
     index?: number;
 }
 
-export default function PairedBlock({
+/**
+ * PairedBlock - Memoized component for image + prompt side-by-side layout
+ * Optimized with smart image loading based on position
+ */
+const PairedBlock = memo(function PairedBlock({
     block,
     isLiked,
     onHeartClick,
@@ -46,10 +52,7 @@ export default function PairedBlock({
             {/* Heart button overlay */}
             <HeartButton
                 isLiked={isLiked}
-                onClick={(e) => {
-                    e.stopPropagation();
-                    onHeartClick();
-                }}
+                onClick={onHeartClick}
                 variant="overlay"
             />
         </div>
@@ -67,16 +70,13 @@ export default function PairedBlock({
             {/* Answer - centered in remaining space */}
             <div className="flex-1 flex items-center">
                 <p className="text-xl md:text-3xl font-serif font-bold text-[var(--foreground)] leading-tight break-words">
-                    {prompt.answer}
+                    <TypewriterText text={prompt.answer} />
                 </p>
             </div>
             {/* Heart button overlay */}
             <HeartButton
                 isLiked={isLiked}
-                onClick={(e) => {
-                    e.stopPropagation();
-                    onHeartClick();
-                }}
+                onClick={onHeartClick}
                 variant="overlay"
             />
         </div>
@@ -97,4 +97,6 @@ export default function PairedBlock({
             )}
         </div>
     );
-}
+});
+
+export default PairedBlock;

@@ -1,47 +1,29 @@
 'use client';
 
+import { memo, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { useEndlessCarousel } from '@/hooks';
 import { GradientEdges } from '@/components/ui';
-import { carouselItemHover } from '@/lib/animations';
 import { skills } from '@/data/portfolioData';
-import { useImagePreload } from '@/context/ImagePreloadContext';
 
 const ITEM_SELECTOR = '.skill-item';
 
-// Skeleton placeholder for loading state
-function SkillsRailSkeleton() {
-    return (
-        <div className="relative w-full overflow-hidden py-8">
-            <GradientEdges />
-            <div className="flex gap-4 px-16 md:px-24 w-max">
-                {Array.from({ length: 10 }).map((_, index) => (
-                    <div
-                        key={index}
-                        className="relative flex-shrink-0 skill-item"
-                    >
-                        <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-xl overflow-hidden shadow-lg select-none bg-gray-200 animate-pulse" />
-                        <div className="h-4 w-16 mx-auto mt-2 bg-gray-200 rounded animate-pulse" />
-                    </div>
-                ))}
-            </div>
-        </div>
-    );
-}
-
-// Main carousel content
-function SkillsRailContent() {
+/**
+ * SkillsRail - Endless scrolling carousel for skills
+ * Renders immediately with lazy-loaded images (no skeleton swap)
+ */
+const SkillsRail = memo(function SkillsRail() {
     const { containerRef, x, panHandlers, itemHandlers } = useEndlessCarousel({
         itemCount: skills.length,
         itemSelector: ITEM_SELECTOR,
     });
 
-    // Create 3 sets for endless scrolling
-    const endlessSkills = [...skills, ...skills, ...skills];
+    // Memoize the tripled array to prevent recreation
+    const endlessSkills = useMemo(() => [...skills, ...skills, ...skills], []);
 
     return (
-        <div className="relative w-full overflow-hidden py-8">
+        <div className="relative w-full overflow-x-clip overflow-y-visible py-8">
             <GradientEdges />
 
             <motion.div
@@ -54,15 +36,13 @@ function SkillsRailContent() {
                 onPanEnd={panHandlers.onPanEnd}
             >
                 {endlessSkills.map((skill, index) => (
-                    <motion.div
+                    <div
                         key={`${skill.name}-${index}`}
-                        className="relative flex-shrink-0 skill-item"
-                        whileHover={carouselItemHover.whileHover}
-                        transition={carouselItemHover.transition}
+                        className="relative flex-shrink-0 skill-item transition-transform duration-200 hover:scale-105"
                         onPointerDown={itemHandlers.onPointerDown}
                         onClick={itemHandlers.onClick}
                     >
-                        <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-xl overflow-hidden shadow-lg select-none bg-gray-50 flex items-center justify-center p-2">
+                        <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-xl overflow-hidden shadow-lg select-none flex items-center justify-center p-2">
                             <Image
                                 src={skill.icon}
                                 alt={skill.name}
@@ -70,25 +50,17 @@ function SkillsRailContent() {
                                 className="object-contain pointer-events-none p-2"
                                 sizes="(max-width: 768px) 80px, 96px"
                                 draggable={false}
+                                loading="lazy"
                             />
                         </div>
                         <p className="text-center text-xs uppercase font-bold tracking-widest text-[var(--foreground)]/50 mt-2 select-none">
                             {skill.name}
                         </p>
-                    </motion.div>
+                    </div>
                 ))}
             </motion.div>
         </div>
     );
-}
+});
 
-export default function SkillsRail() {
-    const { isLoaded } = useImagePreload();
-
-    // Show skeleton while preloading, then instantly show carousel (no animation)
-    if (!isLoaded) {
-        return <SkillsRailSkeleton />;
-    }
-
-    return <SkillsRailContent />;
-}
+export default SkillsRail;

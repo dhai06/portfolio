@@ -1,10 +1,9 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, memo } from 'react';
 import { motion, PanInfo } from 'framer-motion';
 import Image from 'next/image';
 import { artists } from '@/data/portfolioData';
-import { useImagePreload } from '@/context/ImagePreloadContext';
 
 // Calculate circular distance (shortest path around the ring)
 function getCircularDistance(index: number, currentIndex: number, total: number): number {
@@ -80,17 +79,11 @@ function getStyleForPosition(distance: number, isMobile: boolean) {
     };
 }
 
-// Skeleton placeholder for loading state
-function ArtistCarouselSkeleton() {
-    return (
-        <div className="relative w-full h-44 md:h-56 mt-2 pb-12 md:pb-8 rounded-2xl flex items-center justify-center">
-            <div className="w-28 h-28 md:w-56 md:h-56 rounded-2xl bg-gray-200 animate-pulse" />
-        </div>
-    );
-}
-
-// Main carousel content
-function ArtistCarouselContent() {
+/**
+ * ArtistCarousel - 3D rotating carousel for favorite artists
+ * Renders immediately with lazy-loaded images (no skeleton swap)
+ */
+const ArtistCarousel = memo(function ArtistCarousel() {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isPaused, setIsPaused] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
@@ -208,6 +201,7 @@ function ArtistCarouselContent() {
                                 className="object-cover pointer-events-none"
                                 sizes="(max-width: 768px) 112px, 224px"
                                 draggable={false}
+                                loading="lazy"
                             />
                         </motion.div>
                     );
@@ -215,15 +209,6 @@ function ArtistCarouselContent() {
             </motion.div>
         </div>
     );
-}
+});
 
-export default function ArtistCarousel() {
-    const { isLoaded } = useImagePreload();
-
-    // Show skeleton while preloading, then instantly show carousel (no animation)
-    if (!isLoaded) {
-        return <ArtistCarouselSkeleton />;
-    }
-
-    return <ArtistCarouselContent />;
-}
+export default ArtistCarousel;
