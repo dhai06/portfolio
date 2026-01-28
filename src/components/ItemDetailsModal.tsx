@@ -33,15 +33,24 @@ export default function ItemDetailsModal({
     const details: ItemDetails | undefined = item.details;
     const [zoomedImage, setZoomedImage] = useState<string | null>(null);
 
-    // Lock body scroll when modal is open
+    // Close modal immediately if item has no details
     useEffect(() => {
+        if (!details) {
+            onClose();
+        }
+    }, [details, onClose]);
+
+    // Lock body scroll when modal is open (only if we have details to show)
+    useEffect(() => {
+        if (!details) return;
+
         const originalOverflow = document.body.style.overflow;
         document.body.style.overflow = 'hidden';
 
         return () => {
             document.body.style.overflow = originalOverflow;
         };
-    }, []);
+    }, [details]);
 
     if (!details) {
         return null;
@@ -126,20 +135,19 @@ export default function ItemDetailsModal({
                         {details.media && (
                             <div className="mb-6">
                                 {details.media.type === 'images' && details.media.images && (
-                                    <div className="grid grid-cols-2 gap-2">
+                                    <div className="columns-2 gap-2 space-y-2">
                                         {details.media.images.map((imgSrc, index) => (
                                             <div
                                                 key={index}
-                                                className="relative rounded-xl overflow-hidden bg-gray-50 cursor-zoom-in group/gallery aspect-square"
+                                                className="relative rounded-xl overflow-hidden bg-gray-50 cursor-zoom-in group/gallery break-inside-avoid"
                                                 onClick={() => setZoomedImage(imgSrc)}
                                             >
-                                                <Image
+                                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                <img
                                                     src={imgSrc}
                                                     alt={`${details.title} image ${index + 1}`}
-                                                    fill
-                                                    sizes="(max-width: 768px) 50vw, 256px"
                                                     loading="lazy"
-                                                    className="object-contain"
+                                                    className="w-full h-auto block"
                                                 />
                                                 <div className="absolute inset-0 bg-black/0 group-hover/gallery:bg-black/10 transition-colors flex items-center justify-center">
                                                     <ZoomIn className="w-6 h-6 text-gray-700 opacity-0 group-hover/gallery:opacity-100 transition-opacity" />

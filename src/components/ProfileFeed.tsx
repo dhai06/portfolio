@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useLayoutEffect } from 'react';
-import { ChevronLeft, ChevronRight, BadgeCheck } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { AnimatePresence, motion, useInView } from 'framer-motion';
 import React from 'react';
 import PhotoBlock from './PhotoBlock';
@@ -9,9 +9,11 @@ import PromptBlock from './PromptBlock';
 import InfoPillsBlock from './InfoPillsBlock';
 import Menu from './Menu';
 import AboutIntroBlock from './AboutIntroBlock';
+import PairedBlock from './PairedBlock';
 import SummaryBlock from './SummaryBlock';
 import ItemDetailsModal from './ItemDetailsModal';
-import { CardData, ImageItem, PromptData } from '@/data/portfolioData';
+import { CardData, ImageItem, PromptData, FeedBlock } from '@/data/portfolioData';
+import { isPairedBlock, isImageItem, isPromptItem } from '@/data/types';
 import { BlockVisibleProvider } from './BlockVisibleContext';
 import { slideVariants, scrollBlockAnimation } from '@/lib/animations';
 import { TIMING, SPRING } from '@/lib/constants';
@@ -123,96 +125,82 @@ export default function ProfileFeed({ profiles }: ProfileFeedProps) {
         }
     };
 
-    // Interleave images and prompts for a Hinge-like feed
+    // Render blocks based on the new unified blocks array
     const renderBlocks = () => {
-        const blocks: React.ReactNode[] = [];
-        const maxLen = Math.max(currentProfile.images.length, currentProfile.prompts.length);
+        const renderedBlocks: React.ReactNode[] = [];
 
-        // For about page, render first image and first prompt side by side
-        if (currentProfile.type === 'about' && currentProfile.images[0]) {
-            const introImg = currentProfile.images[0];
-            blocks.push(
-                <AboutIntroBlock
-                    key="about-intro-0"
-                    imageSrc={introImg.src}
-                    imageAlt={currentProfile.name}
-                    isLiked={likedItems.has(introImg.id)}
-                    onHeartClick={() => handleHeartClick(introImg, introImg.id, introImg.likeSummary)}
-                    onBlockClick={() => setSelectedItem(introImg)}
-                />
-            );
+        currentProfile.blocks.forEach((block, index) => {
+            if (isPairedBlock(block)) {
+                // Create a synthetic item for the modal that combines paired block data
+                const pairedItem: ImageItem = {
+                    kind: 'image',
+                    id: block.id,
+                    src: block.image.src,
+                    likeSummary: block.likeSummary,
+                    details: block.details,
+                };
 
-            // Continue with remaining blocks starting from index 1
-            for (let i = 1; i < maxLen; i++) {
-                if (currentProfile.images[i]) {
-                    const img = currentProfile.images[i];
-                    blocks.push(
-                        <PhotoBlock
-                            key={`img-${i}`}
-                            src={img.src}
-                            alt={currentProfile.name}
-                            isLiked={likedItems.has(img.id)}
-                            onHeartClick={() => handleHeartClick(img, img.id, img.likeSummary)}
-                            onBlockClick={() => setSelectedItem(img)}
+                // For about page's first paired block, use the special AboutIntroBlock
+                if (currentProfile.type === 'about' && index === 0 && block.prompt.contentType === 'intro') {
+                    renderedBlocks.push(
+                        <AboutIntroBlock
+                            key={`paired-about-${index}`}
+                            imageSrc={block.image.src}
+                            imageAlt={currentProfile.name}
+                            isLiked={likedItems.has(block.id)}
+                            onHeartClick={() => handleHeartClick(pairedItem, block.id, block.likeSummary)}
+                            onBlockClick={() => setSelectedItem(pairedItem)}
+                        />
+                    );
+                } else {
+                    // Regular paired block with alternating layout - both parts share the same ID
+                    renderedBlocks.push(
+                        <PairedBlock
+                            key={`paired-${index}`}
+                            block={block}
+                            isLiked={likedItems.has(block.id)}
+                            onHeartClick={() => handleHeartClick(pairedItem, block.id, block.likeSummary)}
+                            onBlockClick={() => setSelectedItem(pairedItem)}
+                            index={index}
                         />
                     );
                 }
-                if (currentProfile.prompts[i]) {
-                    const prompt = currentProfile.prompts[i];
-                    const promptId = prompt.id || `prompt-${i}`;
-                    const promptSummary = prompt.likeSummary || prompt.answer;
-                    blocks.push(
-                        <PromptBlock
-                            key={`prompt-${i}`}
-                            prompt={prompt}
-                            isLiked={likedItems.has(promptId)}
-                            onHeartClick={() => handleHeartClick(prompt, promptId, promptSummary)}
-                            onBlockClick={() => setSelectedItem(prompt)}
-                        />
-                    );
-                }
+            } else if (isImageItem(block)) {
+                // Standalone image
+                renderedBlocks.push(
+                    <PhotoBlock
+                        key={`img-${index}`}
+                        src={block.src}
+                        alt={currentProfile.name}
+                        isLiked={likedItems.has(block.id)}
+                        onHeartClick={() => handleHeartClick(block, block.id, block.likeSummary)}
+                        onBlockClick={() => setSelectedItem(block)}
+                    />
+                );
+            } else if (isPromptItem(block)) {
+                // Standalone prompt
+                const promptId = block.id || `prompt-${index}`;
+                const promptSummary = block.likeSummary || block.answer;
+                renderedBlocks.push(
+                    <PromptBlock
+                        key={`prompt-${index}`}
+                        prompt={block}
+                        isLiked={likedItems.has(promptId)}
+                        onHeartClick={() => handleHeartClick(block, promptId, promptSummary)}
+                        onBlockClick={() => setSelectedItem(block)}
+                    />
+                );
             }
-        } else {
-            // For other profile types, use normal interleaving
-            for (let i = 0; i < maxLen; i++) {
-                if (currentProfile.images[i]) {
-                    const img = currentProfile.images[i];
-                    blocks.push(
-                        <PhotoBlock
-                            key={`img-${i}`}
-                            src={img.src}
-                            alt={currentProfile.name}
-                            isLiked={likedItems.has(img.id)}
-                            onHeartClick={() => handleHeartClick(img, img.id, img.likeSummary)}
-                            onBlockClick={() => setSelectedItem(img)}
-                        />
-                    );
-                }
-                if (currentProfile.prompts[i]) {
-                    const prompt = currentProfile.prompts[i];
-                    const promptId = prompt.id || `prompt-${i}`;
-                    const promptSummary = prompt.likeSummary || prompt.answer;
-                    blocks.push(
-                        <PromptBlock
-                            key={`prompt-${i}`}
-                            prompt={prompt}
-                            isLiked={likedItems.has(promptId)}
-                            onHeartClick={() => handleHeartClick(prompt, promptId, promptSummary)}
-                            onBlockClick={() => setSelectedItem(prompt)}
-                        />
-                    );
-                }
-            }
-        }
+        });
 
         // Append SummaryBlock on contact page
         if (currentProfile.type === 'contact') {
-            blocks.push(
+            renderedBlocks.push(
                 <SummaryBlock key="summary" likedSummaries={[...likedItems.values()]} />
             );
         }
 
-        return blocks;
+        return renderedBlocks;
     };
 
     return (
@@ -223,9 +211,6 @@ export default function ProfileFeed({ profiles }: ProfileFeedProps) {
                     <h1 className="text-lg font-medium text-[var(--foreground)]">
                         {currentProfile.name}
                     </h1>
-                    {currentProfile.verified && (
-                        <BadgeCheck className="w-5 h-5 text-[var(--accent)]" />
-                    )}
                 </div>
                 <Menu
                     profiles={profiles}
@@ -262,13 +247,15 @@ export default function ProfileFeed({ profiles }: ProfileFeedProps) {
                                 {block}
                             </ScrollAnimationBlock>
                         ))}
-                        <ScrollAnimationBlock
-                            key={`${currentProfile.id}-pills`}
-                            index={renderBlocks().length}
-                            mountTime={mountTime}
-                        >
-                            <InfoPillsBlock pills={currentProfile.infoPills} />
-                        </ScrollAnimationBlock>
+                        {currentProfile.infoPills && currentProfile.infoPills.length > 0 && (
+                            <ScrollAnimationBlock
+                                key={`${currentProfile.id}-pills`}
+                                index={renderBlocks().length}
+                                mountTime={mountTime}
+                            >
+                                <InfoPillsBlock pills={currentProfile.infoPills} />
+                            </ScrollAnimationBlock>
+                        )}
                     </div>
                 </motion.main>
             </AnimatePresence>

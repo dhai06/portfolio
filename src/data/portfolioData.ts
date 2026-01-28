@@ -1,8 +1,8 @@
 import { movieImages, skillImages, artistImages } from '@/lib/imagePreloader';
-import type { Interest, Skill, Movie, Artist, CardData, ImageItem, PromptItem, InfoPill, ItemDetails } from './types';
+import type { Interest, Skill, Movie, Artist, CardData, ImageItem, PromptItem, InfoPill, ItemDetails, PairedBlock, FeedBlock } from './types';
 
 // Re-export types for backward compatibility
-export type { ItemDetails, ImageItem, InfoPill, CardData };
+export type { ItemDetails, ImageItem, InfoPill, CardData, PairedBlock, FeedBlock };
 export type { PromptItem as PromptData };
 
 // Centralized interests data
@@ -72,32 +72,30 @@ export const portfolioData: CardData[] = [
         id: '1',
         type: 'about',
         name: 'WIP - Daniel Hai - WIP',
-        verified: false,
-        images: [{
-            kind: 'image',
-            src: '/images/DSCF7233.JPG',
-            id: 'about-img-1',
-            likeSummary: 'My about me',
-            details: {
-                title: 'My interests',
-                description: 'hint: tap the blocks to see more details or press the heart to also like it :)',
-                tags: ['Random Projects', 'Formula 1', 'Cooking', 'Swimming', 'Fashion', 'Working Out', 'Playing Piano', 'Discovering Restaurants', 'Mechanical Keyboards', 'Watching TV Shows']
-            }
-        }],
-        prompts: [
+        blocks: [
+            // Intro paired block - image left, intro content right
             {
-                kind: 'prompt',
-                question: 'ignore',
-                answer: 'ignore',
-                id: 'about-prompt-1',
-                likeSummary: 'Intro section',
-                contentType: 'intro',
+                kind: 'paired',
+                layout: 'image-left',
+                id: 'about-intro',
+                likeSummary: 'My about me',
                 details: {
-                    title: 'Introduction',
-                    description: 'Welcome to my portfolio! I\'m passionate about building innovative solutions.',
-                    tags: ['About', 'Introduction']
+                    title: 'My interests',
+                    description: 'hint: tap the blocks to see more details or press the heart to also like it :)',
+                    tags: ['Random Projects', 'Formula 1', 'Cooking', 'Swimming', 'Fashion', 'Working Out', 'Playing Piano', 'Discovering Restaurants', 'Mechanical Keyboards', 'Watching TV Shows']
+                },
+                image: {
+                    kind: 'image',
+                    src: '/images/DSCF7233.JPG',
+                },
+                prompt: {
+                    kind: 'prompt',
+                    question: 'ignore',
+                    answer: 'ignore',
+                    contentType: 'intro',
                 }
             },
+            // Remaining prompts as standalone blocks
             {
                 kind: 'prompt',
                 question: 'I\'m currently working on',
@@ -208,82 +206,220 @@ export const portfolioData: CardData[] = [
                 }
             },
         ],
-        infoPills: [
-            { label: '' },
-        ],
-        details: {
-        },
     },
     {
         id: '2',
         type: 'project',
-        name: 'Project One',
-        verified: false,
-        images: [],
-        prompts: [],
-        infoPills: [],
-        details: {
-            stack: [],
-        },
+        name: 'Formula UBC',
+        blocks: [
+            // Example: paired block with image left, prompt right
+            {
+                kind: 'paired',
+                layout: 'image-left',
+                id: 'fubc-overview',
+                likeSummary: 'Formula UBC overview',
+                image: {
+                    kind: 'image',
+                    src: '/images/projects/fubc/fubcmain.JPG',
+                },
+                prompt: {
+                    kind: 'prompt',
+                    question: 'I am currently working on ',
+                    answer: 'Data aquisition across various systems on the car, as well as developing the website (very much in progress). Tap this block to learn more about Formula UBC!',
+                    contentType: 'text',
+                },
+                details: {
+                    title: 'Formula UBC',
+                    description: 'Formula UBC is a student-run Formula SAE team at the University of British Columbia. We are a small team of about 10 students, and we are currently working on a data acquisition system for the car.',
+                    //tags: ['Data Acquisition', 'Website', 'Formula SAE'],
+                }
+            },
+            // Example: paired block with prompt left, image right (alternating)
+            {
+                kind: 'paired',
+                layout: 'image-right',
+                id: 'fubc-daq',
+                likeSummary: 'Data Acquisition System',
+                image: {
+                    kind: 'image',
+                    src: '/images/projects/fubc/smol.png',
+                    objectFit: 'contain',
+                },
+                prompt: {
+                    kind: 'prompt',
+                    question: 'Some elec work',
+                    answer: 'This board is a small part of a data acquisition system I am working on, which will obtain data to validate rear wing downforce, and record loads on the A-arms',
+                    contentType: 'text',
+                },
+                details: {
+                    title: 'Data Aquisition System',
+                    description: 'This board is a small part of a data acquisition system I am working on, which will obtain data to validate rear wing downforce, and record loads on the A-arms',
+                    media: {
+                        type: 'images', 
+                        images: ['/images/projects/fubc/smol5.png','/images/projects/fubc/smol4.png', '/images/projects/fubc/smol2.png', '/images/projects/fubc/smol3.png'],
+                    },
+                    tags: ['Altium', 'Embedded C'],
+                }
+            },
+            {
+                kind: 'paired', 
+                layout: 'image-left',   
+                id: 'fubc-fw',
+                likeSummary: 'Front Wing Design',
+                image: {
+                    kind: 'image',
+                    src: '/images/projects/fubc/fw1.png',
+                    objectFit: 'cover',
+                },
+                prompt: {
+                    kind: 'prompt',
+                    question: 'On the aero side',
+                    answer: 'During my first year with the team, I worked on the front wing design, and we were able to achieve a 1.8x increase in front wing downforce!',
+                    contentType: 'text',
+                },
+                details: {
+                    title: 'Front Wing Design',
+                    description: 'Our goals were to maximize downforce, follow ruels and regulations, and ensure our front wing didn\'t scrape the gronud (like it did in the 23/24 season). We designed the parts in SolidWorks, simulated it in STAR-CCM+ with the entire car in a 40 million cell CFD simulation, and finally manufactured the entire carbon fiber wing ourselves.',
+                    media: {
+                        type: 'images', 
+                        images: ['/images/projects/fubc/fw2.png','/images/projects/fubc/fw4.jpg','/images/projects/fubc/manu1.jpg', '/images/projects/fubc/fw3.png'],
+                    },
+                    tags: ['SolidWorks', 'STAR-CCM+', 'CFD', 'Carbon Fiber', 'Manufacturing'],
+                },
+            },
+            {
+                kind: 'paired', 
+                layout: 'image-right',   
+                id: 'fubc-manu',
+                likeSummary: 'Aero Manufacturing!',
+                image: {
+                    kind: 'image',
+                    src: '/images/projects/fubc/manu.jpg',
+                    objectFit: 'cover',
+                    objectPosition: 'center 30%',
+                },
+                prompt: {
+                    kind: 'prompt',
+                    question: 'Manufacturing...',
+                    answer: 'So much carbon and MDF dust... ',
+                    contentType: 'text',
+                },
+                details: {
+                    title: 'Manufacturing',
+                    description: 'As you can probably imagine, it takes a lot of work to make carbon fiber parts. It starts with CNC machining the mould from MDF (wood fiber boards), laying up the carbon fiber sheets, curing the part, and finally sanding (and sometimes a bit of resin) to touch up the part before it\'s read to go on the car.',
+                    media:{
+                        type: 'images', 
+                        images: ['/images/projects/fubc/manu2.PNG', 'images/projects/fubc/manu1.jpg'],
+                    },
+                    tags: ['SolidWorks', 'STAR-CCM+', 'CFD', 'Carbon Fiber', 'Manufacturing'],
+                }
+            }
+        ],
     },
     {
         id: '3',
         type: 'project',
-        name: 'Project Two',
-        verified: false,
-        images: [],
-        prompts: [],
-        infoPills: [],
-        details: {
-            stack: [],
-        },
+        name: 'Personal Projects',
+        blocks: [
+            {
+                kind: 'paired',
+                layout: 'image-left',
+                id: 'project2-overview',
+                likeSummary: 'Project Two overview',
+                image: {
+                    kind: 'image',
+                    src: '/images/placeholder.png',
+                },
+                prompt: {
+                    kind: 'prompt',
+                    question: 'What is this project?',
+                    answer: 'Project Two description goes here...',
+                    contentType: 'text',
+                }
+            },
+            {
+                kind: 'paired',
+                layout: 'image-right',
+                id: 'project2-features',
+                likeSummary: 'Project Two features',
+                image: {
+                    kind: 'image',
+                    src: '/images/placeholder.png',
+                },
+                prompt: {
+                    kind: 'prompt',
+                    question: 'Key features',
+                    answer: 'Feature description goes here...',
+                    contentType: 'text',
+                }
+            },
+        ],
     },
     {
         id: '4',
         type: 'project',
         name: 'Project Three',
-        verified: false,
-        images: [],
-        prompts: [],
-        infoPills: [],
-        details: {
-            stack: [],
-        },
+        blocks: [
+            {
+                kind: 'paired',
+                layout: 'image-left',
+                id: 'project3-overview',
+                likeSummary: 'Project Three overview',
+                image: {
+                    kind: 'image',
+                    src: '/images/placeholder.png',
+                },
+                prompt: {
+                    kind: 'prompt',
+                    question: 'What is this project?',
+                    answer: 'Project Three description goes here...',
+                    contentType: 'text',
+                }
+            },
+            {
+                kind: 'paired',
+                layout: 'image-right',
+                id: 'project3-features',
+                likeSummary: 'Project Three features',
+                image: {
+                    kind: 'image',
+                    src: '/images/placeholder.png',
+                },
+                prompt: {
+                    kind: 'prompt',
+                    question: 'Key features',
+                    answer: 'Feature description goes here...',
+                    contentType: 'text',
+                }
+            },
+        ],
     },
     {
         id: '5',
         type: 'contact',
         name: 'Get In Touch',
-        verified: false,
-        images: [{
-            kind: 'image',
-            src: '/images/placeholder.png',
-            id: 'contact-img-1',
-            likeSummary: 'Contact photo',
-            details: {
-                title: 'Contact',
-                description: 'blank... for now',
-                tags: []
-            }
-        }],
-        prompts: [
+        blocks: [
             {
-                kind: 'prompt',
-                question: 'Reach out if',
-                answer: 'blank... for now',
-                id: 'contact-prompt-1',
+                kind: 'paired',
+                layout: 'image-left',
+                id: 'contact-intro',
                 likeSummary: 'Reach out invitation',
-                contentType: 'text',
                 details: {
-                    title: 'Reach Out',
+                    title: 'Contact',
                     description: 'blank... for now',
                     tags: []
+                },
+                image: {
+                    kind: 'image',
+                    src: '/images/placeholder.png',
+                },
+                prompt: {
+                    kind: 'prompt',
+                    question: 'Reach out if',
+                    answer: 'blank... for now',
+                    contentType: 'text',
                 }
             },
         ],
-        infoPills: [
-        ],
-        details: {
-        },
     },
 ];

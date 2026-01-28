@@ -24,6 +24,10 @@ interface BaseItem {
 export interface ImageItem extends BaseItem {
     kind: 'image';
     src: string;
+    /** Controls how the image fits its container. Defaults to 'cover' */
+    objectFit?: 'cover' | 'contain';
+    /** Controls the position of the image within its container. Defaults to 'center' */
+    objectPosition?: string;
 }
 
 // Content type for prompts - replaces string-based detection
@@ -42,7 +46,7 @@ export interface PromptItem extends BaseItem {
     contentType?: PromptContentType;
 }
 
-// Union type for feed items
+// Union type for feed items (legacy - use FeedBlock for new code)
 export type FeedItem = ImageItem | PromptItem;
 
 // Type guards
@@ -107,16 +111,34 @@ export interface WeatherData {
     isDay: boolean;
 }
 
+// Paired block for alternating image/prompt layouts (like about me intro)
+// The paired block has shared id, likeSummary, and details - clicking either part opens the same modal
+export interface PairedBlock {
+    kind: 'paired';
+    id: string;
+    likeSummary: string;
+    details?: ItemDetails;
+    image: Omit<ImageItem, 'id' | 'likeSummary' | 'details'>;
+    prompt: Omit<PromptItem, 'id' | 'likeSummary' | 'details'>;
+    layout: 'image-left' | 'image-right'; // image-left = image on left, prompt on right; image-right = image on right, prompt on left
+}
+
+// Feed block can be a single image, single prompt, or a paired block
+export type FeedBlock = ImageItem | PromptItem | PairedBlock;
+
+// Type guard for paired blocks
+export function isPairedBlock(block: FeedBlock): block is PairedBlock {
+    return block.kind === 'paired';
+}
+
 // Card data type (profile)
 export interface CardData {
     id: string;
     type: 'about' | 'project' | 'contact';
     name: string;
-    verified?: boolean;
-    images: ImageItem[];
-    prompts: PromptItem[];
-    infoPills: InfoPill[];
-    details: {
+    blocks: FeedBlock[];
+    infoPills?: InfoPill[];
+    details?: {
         stack?: string[];
         github?: string;
         demo?: string;
