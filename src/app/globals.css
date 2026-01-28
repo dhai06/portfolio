@@ -83,3 +83,14 @@ body>* {
   display: none;
   /* Chrome, Safari, and Opera */
 }
+
+/* ==============================================
+   FEED BLOCK CLASSES
+   Used for block type identification (no containment to preserve shadows)
+   ============================================== */
+.feed-block,
+.feed-block-prompt,
+.feed-block-paired,
+.feed-block-priority {
+  /* No containment - shadows must overflow */
+}

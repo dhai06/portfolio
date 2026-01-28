@@ -2,7 +2,7 @@
 
 import { memo } from 'react';
 import Image from 'next/image';
-import { HeartButton } from './ui';
+import HeartButton from './ui/HeartButton';
 import TypewriterText from './TypewriterText';
 import SocialLinks from './about/SocialLinks';
 import type { PairedBlock as PairedBlockType } from '@/data/types';

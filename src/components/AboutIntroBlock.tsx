@@ -4,8 +4,11 @@ import Image from 'next/image';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useState, useEffect, memo } from 'react';
 import TypewriterText from './TypewriterText';
-import { HeartButton } from './ui';
-import { LocationTimeWidget, SpotifyWidget, InterestsPill, SocialLinks } from './about';
+import HeartButton from './ui/HeartButton';
+import LocationTimeWidget from './about/LocationTimeWidget';
+import SpotifyWidget from './about/SpotifyWidget';
+import InterestsPill from './about/InterestsPill';
+import SocialLinks from './about/SocialLinks';
 import { aboutBlockVariants, hintVariants } from '@/lib/animations';
 import { DELAYS, SPRING } from '@/lib/constants';
 

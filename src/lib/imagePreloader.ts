@@ -63,8 +63,8 @@ const carouselLoadingState = {
     movie: { loaded: false, loading: false },
 };
 
-// Concurrency limit to prevent network saturation
-const DEFAULT_CONCURRENCY = 4;
+// Higher concurrency for faster preloading - modern browsers handle 6+ concurrent requests well
+const DEFAULT_CONCURRENCY = 8;
 
 /**
  * Preload a single image and return a promise

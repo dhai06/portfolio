@@ -11,10 +11,12 @@ const wrap = (min: number, max: number, v: number) => {
 };
 
 interface UseEndlessCarouselOptions {
-    /** Number of items in one set (before triplication) */
+    /** Number of items in one set (before duplication) */
     itemCount: number;
     /** CSS selector for measuring item width (e.g., '.movie-item') */
     itemSelector: string;
+    /** Number of times the item array is repeated (default: 2) */
+    setCount?: number;
     /** Custom base velocity (default: CAROUSEL.BASE_VELOCITY) */
     baseVelocity?: number;
     /** Custom friction (default: CAROUSEL.FRICTION) */
@@ -47,6 +49,7 @@ interface UseEndlessCarouselReturn {
 export function useEndlessCarousel({
     itemCount,
     itemSelector,
+    setCount = 2,
     baseVelocity = CAROUSEL.BASE_VELOCITY,
     friction = CAROUSEL.FRICTION,
 }: UseEndlessCarouselOptions): UseEndlessCarouselReturn {
@@ -68,10 +71,12 @@ export function useEndlessCarousel({
         if (firstItem) {
             const totalWidth = (firstItem.clientWidth + CAROUSEL.ITEM_GAP) * itemCount;
             setOneSetWidth(totalWidth);
-            // Start at the middle set to have buffer on both sides
-            baseX.set(-totalWidth);
+            // For 2 sets: start at -oneSetWidth/2 to center the view
+            // For 3 sets: start at -oneSetWidth (middle set)
+            const startPosition = setCount === 2 ? -totalWidth / 2 : -totalWidth;
+            baseX.set(startPosition);
         }
-    }, [baseX, itemCount, itemSelector]);
+    }, [baseX, itemCount, itemSelector, setCount]);
 
     // Animation frame for auto-scroll and momentum
     useAnimationFrame((t, delta) => {
@@ -97,8 +102,11 @@ export function useEndlessCarousel({
     // Transform for seamless wrapping
     const x = useTransform(baseX, (v) => {
         if (!oneSetWidth) return 0;
-        // Wrap between -2*oneSetWidth and -oneSetWidth
-        return wrap(-2 * oneSetWidth, -oneSetWidth, v);
+        // For 2 sets: wrap between -oneSetWidth and 0
+        // For 3 sets: wrap between -2*oneSetWidth and -oneSetWidth
+        const wrapMin = setCount === 2 ? -oneSetWidth : -2 * oneSetWidth;
+        const wrapMax = setCount === 2 ? 0 : -oneSetWidth;
+        return wrap(wrapMin, wrapMax, v);
     });
 
     // Pan handlers for container

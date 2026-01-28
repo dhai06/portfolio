@@ -2,11 +2,11 @@
 
 import { memo } from 'react';
 import { PromptData } from '@/data/portfolioData';
-import { HeartButton } from './ui';
+import HeartButton from './ui/HeartButton';
 import TypewriterText from './TypewriterText';
 import ArtistCarousel from './ArtistCarousel';
-import MovieRail from './MovieRail';
-import SkillsRail from './SkillsRail';
+import MovieRail from './carousels/MovieRail';
+import SkillsRail from './carousels/SkillsRail';
 
 interface PromptBlockProps {
     prompt: PromptData;

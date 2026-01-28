@@ -2,7 +2,7 @@
 
 import { memo } from 'react';
 import Image from 'next/image';
-import { HeartButton } from './ui';
+import HeartButton from './ui/HeartButton';
 
 interface PhotoBlockProps {
     src: string;

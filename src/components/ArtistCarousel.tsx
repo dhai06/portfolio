@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef, memo } from 'react';
+import { useState, useEffect, useCallback, useRef, memo, useMemo } from 'react';
 import { motion, PanInfo } from 'framer-motion';
 import Image from 'next/image';
 import { artists } from '@/data/portfolioData';
@@ -15,6 +15,13 @@ function getCircularDistance(index: number, currentIndex: number, total: number)
 
     return diff;
 }
+
+// Hoisted outside component to prevent recreation (rendering-hoist-jsx)
+const SPRING_TRANSITION = {
+    type: 'spring' as const,
+    stiffness: 200,
+    damping: 30,
+};
 
 // Get 3D style based on position distance from center - responsive version
 function getStyleForPosition(distance: number, isMobile: boolean) {
@@ -97,14 +104,14 @@ const ArtistCarousel = memo(function ArtistCarousel() {
         }
     }, []);
 
-    // Detect mobile viewport
+    // Detect mobile viewport - use passive listener for better scroll performance
     useEffect(() => {
         const checkMobile = () => {
             setIsMobile(window.innerWidth < 768);
         };
 
         checkMobile();
-        window.addEventListener('resize', checkMobile);
+        window.addEventListener('resize', checkMobile, { passive: true });
         return () => window.removeEventListener('resize', checkMobile);
     }, []);
 
@@ -144,17 +151,21 @@ const ArtistCarousel = memo(function ArtistCarousel() {
     };
 
     // Handle clicking on side images
-    const handleImageClick = (distance: number) => {
+    const handleImageClick = useCallback((distance: number) => {
         if (distance > 0) goNext();
         if (distance < 0) goPrev();
-    };
+    }, [goNext, goPrev]);
 
-    // Smooth spring transition
-    const transition = {
-        type: 'spring' as const,
-        stiffness: 200,
-        damping: 30,
-    };
+    // Only render visible items (within ±2 of current) to reduce DOM elements
+    // This reduces from 11 animated elements to 5 at most
+    const visibleArtists = useMemo(() => {
+        return artists.map((artist, index) => {
+            const distance = getCircularDistance(index, currentIndex, artists.length);
+            // Only render items within visible range
+            if (Math.abs(distance) > 2) return null;
+            return { artist, index, distance };
+        }).filter(Boolean) as { artist: typeof artists[0]; index: number; distance: number }[];
+    }, [currentIndex]);
 
     return (
         <div
@@ -175,17 +186,16 @@ const ArtistCarousel = memo(function ArtistCarousel() {
                 onDragEnd={handleDragEnd}
                 style={{ transformStyle: 'preserve-3d' }}
             >
-                {artists.map((artist, index) => {
-                    const distance = getCircularDistance(index, currentIndex, artists.length);
+                {visibleArtists.map(({ artist, index, distance }) => {
                     const style = getStyleForPosition(distance, isMobile);
-                    const isClickable = distance !== 0 && Math.abs(distance) <= 2;
+                    const isClickable = distance !== 0;
 
                     return (
                         <motion.div
                             key={artist.name}
                             className={`absolute w-28 h-28 md:w-56 md:h-56 rounded-2xl overflow-hidden ${isClickable ? 'cursor-pointer' : ''}`}
                             animate={style}
-                            transition={transition}
+                            transition={SPRING_TRANSITION}
                             onClick={() => isClickable && handleImageClick(distance)}
                             style={{
                                 transformStyle: 'preserve-3d',

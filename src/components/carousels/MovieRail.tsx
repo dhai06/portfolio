@@ -4,14 +4,18 @@ import { memo, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { useEndlessCarousel } from '@/hooks';
-import { GradientEdges } from '@/components/ui';
+import GradientEdges from '@/components/ui/GradientEdges';
 import { movies } from '@/data/portfolioData';
 
 const ITEM_SELECTOR = '.movie-item';
 
 /**
  * MovieRail - Endless scrolling carousel for movies/shows
- * Renders immediately with lazy-loaded images (no skeleton swap)
+ *
+ * Performance optimizations:
+ * - Uses 2x array instead of 3x (20 items vs 30)
+ * - First set of images are eager-loaded (preloaded by ImagePreloadProvider)
+ * - GPU-accelerated transforms via will-change
  */
 const MovieRail = memo(function MovieRail() {
     const { containerRef, x, panHandlers, itemHandlers } = useEndlessCarousel({
@@ -19,8 +23,8 @@ const MovieRail = memo(function MovieRail() {
         itemSelector: ITEM_SELECTOR,
     });
 
-    // Memoize the tripled array to prevent recreation
-    const endlessMovies = useMemo(() => [...movies, ...movies, ...movies], []);
+    // Use 2x array - still provides seamless looping with fewer DOM nodes
+    const endlessMovies = useMemo(() => [...movies, ...movies], []);
 
     return (
         <div className="relative w-full overflow-x-clip overflow-y-visible py-8">
@@ -29,32 +33,38 @@ const MovieRail = memo(function MovieRail() {
             <motion.div
                 ref={containerRef}
                 className="flex gap-4 px-16 md:px-24 w-max cursor-grab active:cursor-grabbing"
-                style={{ x, touchAction: 'pan-y' }}
+                style={{ x, touchAction: 'pan-y', willChange: 'transform' }}
                 onClick={panHandlers.onClick}
                 onPanStart={panHandlers.onPanStart}
                 onPan={panHandlers.onPan}
                 onPanEnd={panHandlers.onPanEnd}
             >
-                {endlessMovies.map((movie, index) => (
-                    <div
-                        key={`${movie.title}-${index}`}
-                        className="relative flex-shrink-0 movie-item transition-transform duration-200 hover:scale-105"
-                        onPointerDown={itemHandlers.onPointerDown}
-                        onClick={itemHandlers.onClick}
-                    >
-                        <div className="relative w-32 h-48 md:w-40 md:h-60 rounded-xl overflow-hidden shadow-lg select-none">
-                            <Image
-                                src={movie.poster}
-                                alt={movie.title}
-                                fill
-                                className="object-cover pointer-events-none"
-                                sizes="(max-width: 768px) 128px, 160px"
-                                draggable={false}
-                                loading="lazy"
-                            />
+                {endlessMovies.map((movie, index) => {
+                    // First set of images are eager-loaded (already preloaded)
+                    const isFirstSet = index < movies.length;
+
+                    return (
+                        <div
+                            key={`${movie.title}-${index}`}
+                            className="relative flex-shrink-0 movie-item"
+                            onPointerDown={itemHandlers.onPointerDown}
+                            onClick={itemHandlers.onClick}
+                        >
+                            <div className="relative w-32 h-48 md:w-40 md:h-60 rounded-xl overflow-hidden shadow-lg select-none">
+                                <Image
+                                    src={movie.poster}
+                                    alt={movie.title}
+                                    fill
+                                    className="object-cover pointer-events-none"
+                                    sizes="(max-width: 768px) 128px, 160px"
+                                    draggable={false}
+                                    loading={isFirstSet ? 'eager' : 'lazy'}
+                                    priority={isFirstSet}
+                                />
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    );
+                })}
             </motion.div>
         </div>
     );

@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, ExternalLink, ZoomIn } from 'lucide-react';
 import { ImageItem, PromptData, ItemDetails } from '@/data/portfolioData';
 import Image from 'next/image';
-import { HeartButton } from './ui';
+import HeartButton from './ui/HeartButton';
 import {
     modalBackdropVariants,
     modalContentVariants,
