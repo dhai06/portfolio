@@ -4,6 +4,7 @@ import { memo } from 'react';
 import Image from 'next/image';
 import { HeartButton } from './ui';
 import TypewriterText from './TypewriterText';
+import SocialLinks from './about/SocialLinks';
 import type { PairedBlock as PairedBlockType } from '@/data/types';
 
 interface PairedBlockProps {
@@ -58,9 +59,11 @@ const PairedBlock = memo(function PairedBlock({
         </div>
     );
 
+    const isContactType = prompt.contentType === 'contact';
+
     const PromptBlockEl = (
         <div
-            className="md:col-span-3 relative bg-white rounded-3xl p-8 pb-20 shadow-[0_8px_30px_rgb(0,0,0,0.04)] cursor-pointer min-h-[350px] flex flex-col"
+            className={`md:col-span-3 relative bg-white rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] cursor-pointer min-h-[350px] flex flex-col ${isContactType ? '' : 'pb-20'}`}
             onClick={onBlockClick}
         >
             {/* Question */}
@@ -73,12 +76,24 @@ const PairedBlock = memo(function PairedBlock({
                     <TypewriterText text={prompt.answer} />
                 </p>
             </div>
-            {/* Heart button overlay */}
-            <HeartButton
-                isLiked={isLiked}
-                onClick={onHeartClick}
-                variant="overlay"
-            />
+            {/* Contact type: Social links & Heart with divider line */}
+            {isContactType ? (
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-4 pt-4 mt-6 border-t border-gray-100">
+                    <SocialLinks />
+                    <div className="flex-1" />
+                    <HeartButton
+                        isLiked={isLiked}
+                        onClick={onHeartClick}
+                    />
+                </div>
+            ) : (
+                /* Heart button overlay for non-contact types */
+                <HeartButton
+                    isLiked={isLiked}
+                    onClick={onHeartClick}
+                    variant="overlay"
+                />
+            )}
         </div>
     );
 

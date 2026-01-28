@@ -17,6 +17,13 @@ function isImageItem(item: ImageItem | PromptData): item is ImageItem {
     return 'src' in item;
 }
 
+// Helper to check if a URL is a video file
+function isVideoFile(url: string): boolean {
+    const videoExtensions = ['.mov', '.mp4', '.webm', '.ogg', '.avi'];
+    const lowerUrl = url.toLowerCase();
+    return videoExtensions.some(ext => lowerUrl.endsWith(ext));
+}
+
 interface ItemDetailsModalProps {
     item: ImageItem | PromptData;
     isLiked: boolean;
@@ -136,22 +143,35 @@ export default function ItemDetailsModal({
                             <div className="mb-6">
                                 {details.media.type === 'images' && details.media.images && (
                                     <div className="columns-2 gap-2 space-y-2">
-                                        {details.media.images.map((imgSrc, index) => (
+                                        {details.media.images.map((mediaSrc, index) => (
                                             <div
                                                 key={index}
-                                                className="relative rounded-xl overflow-hidden bg-gray-50 cursor-zoom-in group/gallery break-inside-avoid"
-                                                onClick={() => setZoomedImage(imgSrc)}
+                                                className={`relative rounded-xl overflow-hidden bg-gray-50 break-inside-avoid ${!isVideoFile(mediaSrc) ? 'cursor-zoom-in group/gallery' : ''}`}
+                                                onClick={() => !isVideoFile(mediaSrc) && setZoomedImage(mediaSrc)}
                                             >
-                                                {/* eslint-disable-next-line @next/next/no-img-element */}
-                                                <img
-                                                    src={imgSrc}
-                                                    alt={`${details.title} image ${index + 1}`}
-                                                    loading="lazy"
-                                                    className="w-full h-auto block"
-                                                />
-                                                <div className="absolute inset-0 bg-black/0 group-hover/gallery:bg-black/10 transition-colors flex items-center justify-center">
-                                                    <ZoomIn className="w-6 h-6 text-gray-700 opacity-0 group-hover/gallery:opacity-100 transition-opacity" />
-                                                </div>
+                                                {isVideoFile(mediaSrc) ? (
+                                                    <video
+                                                        src={mediaSrc}
+                                                        controls
+                                                        playsInline
+                                                        className="w-full h-auto block rounded-xl"
+                                                    >
+                                                        Your browser does not support the video tag.
+                                                    </video>
+                                                ) : (
+                                                    <>
+                                                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                        <img
+                                                            src={mediaSrc}
+                                                            alt={`${details.title} image ${index + 1}`}
+                                                            loading="lazy"
+                                                            className="w-full h-auto block"
+                                                        />
+                                                        <div className="absolute inset-0 bg-black/0 group-hover/gallery:bg-black/10 transition-colors flex items-center justify-center">
+                                                            <ZoomIn className="w-6 h-6 text-gray-700 opacity-0 group-hover/gallery:opacity-100 transition-opacity" />
+                                                        </div>
+                                                    </>
+                                                )}
                                             </div>
                                         ))}
                                     </div>

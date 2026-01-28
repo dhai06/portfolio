@@ -1,5 +1,6 @@
 import { movieImages, skillImages, artistImages } from '@/lib/imagePreloader';
 import type { Interest, Skill, Movie, Artist, CardData, ImageItem, PromptItem, InfoPill, ItemDetails, PairedBlock, FeedBlock } from './types';
+import PromptBlock from '@/components/PromptBlock';
 
 // Re-export types for backward compatibility
 export type { ItemDetails, ImageItem, InfoPill, CardData, PairedBlock, FeedBlock };
@@ -99,15 +100,14 @@ export const portfolioData: CardData[] = [
             {
                 kind: 'prompt',
                 question: 'I\'m currently working on',
-                answer: 'An automated project management app that dynamically adjusts timelines based on project dependencies and delays.',
+                answer: 'An automated project management app that dynamically adjusts timelines based on project dependencies and delays, and integrates AI to provide planning suggestions.',
                 id: 'about-prompt-2',
                 likeSummary: 'Current project: automated project management app',
                 contentType: 'text',
                 details: {
                     title: 'Current Project',
-                    description: 'Building an intelligent project management system that uses AI to predict delays and automatically reschedule dependent tasks.',
+                    description: 'Building an intelligent project management system that uses a critical path method (CPM) algortihm to readjust timelines based on dependencies. This was inspired by the manufacturing season we go through at Formula UBC, but is also relevant to other engineering teasm in industry, business owners, event planners, and many more. Check back for updates!',
                     tags: ['AI', 'Project Management', 'Automation'],
-                    relatedLinks: [{ label: 'View Progress', url: '#' }]
                 }
             },
             {
@@ -253,7 +253,7 @@ export const portfolioData: CardData[] = [
                 },
                 details: {
                     title: 'Data Aquisition System',
-                    description: 'This board is a small part of a data acquisition system I am working on, which will obtain data to validate rear wing downforce, and record loads on the A-arms',
+                    description: 'This data aquition system comprises of many amplifer boards, which take the output from strain gauges or load cells, filters and amplifies it, before sending this to centralized board. There, this data gets filtered again, converted via ADC, and sent over CAN bus to the car\'s ECU.',
                     media: {
                         type: 'images', 
                         images: ['/images/projects/fubc/smol5.png','/images/projects/fubc/smol4.png', '/images/projects/fubc/smol2.png', '/images/projects/fubc/smol3.png'],
@@ -334,7 +334,7 @@ export const portfolioData: CardData[] = [
                 prompt: {
                     kind: 'prompt',
                     question: 'A very expensive hobby',
-                    answer: 'This mechanical keyboard was designed completely from scratch, including the PCB and firmware',
+                    answer: 'This mechanical keyboard was designed completely from scratch, including the PCB and firmware.',
                     contentType: 'text',
                 },
                 details: {
@@ -355,20 +355,20 @@ export const portfolioData: CardData[] = [
                 likeSummary: 'Mango: Gesture Controlled Minecraft',
                 image: {
                     kind: 'image',
-                    src: '/images/placeholder.png',
+                    src: '/images/projects/personal/mango/mango2.png',
                 },
                 prompt: {
                     kind: 'prompt',
-                    question: 'Key features',
-                    answer: 'Feature description goes here...',
+                    question: 'HAVE YOU EVER...',
+                    answer: 'Wanted to play minecraft by just moving your body? No? Now you can.',
                     contentType: 'text',
                 },
                 details: {  
                     title: 'Mango: Gesture Controlled Minecraft',
-                        description: 'Mango is a full body gesture controlled Minecraft controller that uses only a webcam to track the player\'s real world actions and translate them into in-game inputs. It was built in 24 hours and won 1st place at HelloHacks 2025! By using various gesture detection functions, normalizing all measurements, and using a simple state manager, we were able to achieve a high degree of accuracy in gesture recognition. Now you can play minecraft by just moving your body! Check out our Devpost and Github below, and make sure to watch the promo vid.',
+                        description: 'Mango is a full body gesture controlled Minecraft controller that uses only a webcam to track the player\'s real world actions and translate them into in-game inputs. It was built in 24 hours and won 1st place at HelloHacks 2025! By using various gesture detection functions, normalizing all measurements, and using a state manager, we were able to achieve a high degree of accuracy in gesture recognition. Now you can play minecraft by just moving your body! Check out our Devpost and Github below, and make sure to watch the promo vid.',
                         media: {
                         type: 'images',
-                        images: ['/images/projects/personal/mango/mango1.png', '/images/projects/personal/mango/mango2.png', '/images/projects/personal/mango/mango3.png'],
+                        images: ['/images/projects/personal/mango/mango1.png', '/images/projects/personal/mango/mango2.png', '/images/projects/personal/mango/mango3.JPG', '/images/projects/personal/mango/mango4.JPG', '/images/projects/personal/mango/mango5.MOV'],
                     },
                     tags: ['OpenCV', 'MediaPipe', 'Minecraft'],
                     relatedLinks:[{ label: 'GitHub', url: 'https://github.com/minjunminji/minecraftCVcontroller'},{label: 'Devpost', url: 'https://devpost.com/software/mango-full-body-gesture-control-for-any-game'}, {label: 'Promo Video', url: 'https://drive.google.com/file/d/1s0_MoA5PT2xQSSJlm68Q3fTFOwgnqBa2/view'}],
@@ -389,21 +389,17 @@ export const portfolioData: CardData[] = [
                 layout: 'image-left',
                 id: 'contact-intro',
                 likeSummary: 'Reach out invitation',
-                details: {
-                    title: 'Contact',
-                    description: 'blank... for now',
-                    tags: []
-                },
                 image: {
                     kind: 'image',
-                    src: '/images/placeholder.png',
+                    src: '/images/DSCF7237.JPG',
                 },
                 prompt: {
                     kind: 'prompt',
                     question: 'Reach out if',
-                    answer: 'blank... for now',
-                    contentType: 'text',
+                    answer: '... anything from my profile interested you \n... if you want to connect\n... if you have any questions\n... if you just want to say hi :)',
+                    contentType: 'contact',
                 }
+
             },
         ],
     },

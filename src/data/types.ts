@@ -36,7 +36,8 @@ export type PromptContentType =
     | 'artist'         // Shows ArtistCarousel
     | 'movie'          // Shows MovieRail
     | 'skills'         // Shows SkillsRail
-    | 'intro';         // About intro block (skip in PromptBlock)
+    | 'intro'          // About intro block (skip in PromptBlock)
+    | 'contact';       // Shows text with SocialLinks
 
 // Prompt item with kind discriminator and content type
 export interface PromptItem extends BaseItem {

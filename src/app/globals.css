@@ -83,31 +83,3 @@ body>* {
   display: none;
   /* Chrome, Safari, and Opera */
 }
-
-/**
- * Content-visibility optimization for off-screen blocks
- * Based on best practice: rendering-content-visibility
- * Browser skips layout/paint for off-screen items, improving initial render
- */
-.feed-block {
-  content-visibility: auto;
-  /* Estimated intrinsic size to prevent layout shifts */
-  contain-intrinsic-size: 0 450px;
-}
-
-/* Larger size estimate for paired blocks (side-by-side layout) */
-.feed-block-paired {
-  content-visibility: auto;
-  contain-intrinsic-size: 0 400px;
-}
-
-/* Smaller size estimate for prompt-only blocks */
-.feed-block-prompt {
-  content-visibility: auto;
-  contain-intrinsic-size: 0 250px;
-}
-
-/* Disable content-visibility for above-the-fold blocks to ensure immediate render */
-.feed-block-priority {
-  content-visibility: visible;
-}

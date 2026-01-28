@@ -51,9 +51,13 @@ export default function TypewriterText({ text, className = '', startAnimation }:
             animate={shouldAnimate ? "visible" : "hidden"}
         >
             {characters.map((char, index) => (
-                <motion.span key={index} variants={characterVariants}>
-                    {char === ' ' ? ' ' : char}
-                </motion.span>
+                char === '\n' ? (
+                    <br key={index} />
+                ) : (
+                    <motion.span key={index} variants={characterVariants}>
+                        {char === ' ' ? ' ' : char}
+                    </motion.span>
+                )
             ))}
         </motion.span>
     );
