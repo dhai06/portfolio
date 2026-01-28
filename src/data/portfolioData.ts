@@ -106,7 +106,7 @@ export const portfolioData: CardData[] = [
                 contentType: 'text',
                 details: {
                     title: 'Current Project',
-                    description: 'Building an intelligent project management system that uses a critical path method (CPM) algortihm to readjust timelines based on dependencies. This was inspired by the manufacturing season we go through at Formula UBC, but is also relevant to other engineering teasm in industry, business owners, event planners, and many more. Check back for updates!',
+                    description: 'I\'m developing an intelligent project management app powered by a Critial Path Method (CPM) algorithm to automate timeline adjustments. Inspired by the high-pressure manufacturing cycles at Formula UBC (where delays and dependencies are constantly an issue), this tool is designed to solve bottlenecks for engineering teams, business ownders, and event planners. Check back for updates!',
                     tags: ['AI', 'Project Management', 'Automation'],
                 }
             },
@@ -396,7 +396,7 @@ export const portfolioData: CardData[] = [
                 prompt: {
                     kind: 'prompt',
                     question: 'Reach out if',
-                    answer: '... anything from my profile interested you \n... if you want to connect\n... if you have any questions\n... if you just want to say hi :)',
+                    answer: '... anything from my profile interested you \n... you want to connect\n... you have any questions\n... you just want to say hi :)',
                     contentType: 'contact',
                 }
 
