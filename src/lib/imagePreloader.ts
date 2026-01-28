@@ -16,11 +16,11 @@ export const artistImages = [
 ];
 
 export const skillImages = [
-    '/images/skills/c++.jpg',
-    '/images/skills/c.png',
-    '/images/skills/python.png',
-    '/images/skills/sw.png',
-    '/images/skills/github.png',
+    '/images/skills/c++.svg',
+    '/images/skills/c.svg',
+    '/images/skills/python.svg',
+    '/images/skills/solidworks-logo-1.svg',
+    '/images/skills/github.svg',
     '/images/skills/excel.png',
     '/images/skills/SystemVerilog.svg',
     '/images/skills/Matlab_icon.png',
@@ -29,7 +29,7 @@ export const skillImages = [
     '/images/skills/ts.png',
     '/images/skills/React-icon.svg.png',
     '/images/skills/Next.js.png',
-    '/images/skills/images.jpg',
+    '/images/skills/RISC-V-logo-square.svg.avif',
     '/images/skills/Jira_Logo.svg.png',
 ];
 

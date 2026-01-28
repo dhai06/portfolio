@@ -2,9 +2,15 @@
 
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Heart, ExternalLink, ZoomIn } from 'lucide-react';
+import { X, ExternalLink, ZoomIn } from 'lucide-react';
 import { ImageItem, PromptData, ItemDetails } from '@/data/portfolioData';
 import Image from 'next/image';
+import { HeartButton } from './ui';
+import {
+    modalBackdropVariants,
+    modalContentVariants,
+    zoomVariants,
+} from '@/lib/animations';
 
 // Type guard to check if item is an ImageItem
 function isImageItem(item: ImageItem | PromptData): item is ImageItem {
@@ -18,7 +24,12 @@ interface ItemDetailsModalProps {
     onClose: () => void;
 }
 
-export default function ItemDetailsModal({ item, isLiked, onToggleLike, onClose }: ItemDetailsModalProps) {
+export default function ItemDetailsModal({
+    item,
+    isLiked,
+    onToggleLike,
+    onClose,
+}: ItemDetailsModalProps) {
     const details: ItemDetails | undefined = item.details;
     const [zoomedImage, setZoomedImage] = useState<string | null>(null);
 
@@ -40,18 +51,19 @@ export default function ItemDetailsModal({ item, isLiked, onToggleLike, onClose 
         <AnimatePresence>
             <motion.div
                 className="fixed inset-0 z-[80] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
+                variants={modalBackdropVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
                 onClick={onClose}
             >
                 <motion.div
                     className="bg-white rounded-3xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl scrollbar-hide"
                     style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-                    initial={{ scale: 0.9, y: 50, opacity: 0 }}
-                    animate={{ scale: 1, y: 0, opacity: 1 }}
-                    exit={{ scale: 0.9, y: 50, opacity: 0 }}
-                    transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                    variants={modalContentVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
                     onClick={(e) => e.stopPropagation()}
                 >
                     {/* Image preview for ImageItem */}
@@ -110,7 +122,7 @@ export default function ItemDetailsModal({ item, isLiked, onToggleLike, onClose 
                             {details.description}
                         </p>
 
-                        {/* Customizable Media Section */}
+                        {/* Media Section */}
                         {details.media && (
                             <div className="mb-6">
                                 {details.media.type === 'images' && details.media.images && (
@@ -144,7 +156,10 @@ export default function ItemDetailsModal({ item, isLiked, onToggleLike, onClose 
                                     </div>
                                 )}
                                 {details.media.type === 'video' && details.media.videoUrl && (
-                                    <div className="relative w-full overflow-hidden bg-gray-50 max-w-md mx-auto rounded-2xl" style={{ paddingBottom: '177.77%' }}>
+                                    <div
+                                        className="relative w-full overflow-hidden bg-gray-50 max-w-md mx-auto rounded-2xl"
+                                        style={{ paddingBottom: '177.77%' }}
+                                    >
                                         <iframe
                                             src={details.media.videoUrl}
                                             className="absolute top-0 left-0 w-full h-full border-0"
@@ -184,20 +199,11 @@ export default function ItemDetailsModal({ item, isLiked, onToggleLike, onClose 
                             <span className="text-sm text-[var(--foreground)]/60">
                                 {isLiked ? 'You liked this!' : 'Like this item'}
                             </span>
-                            <button
+                            <HeartButton
+                                isLiked={isLiked}
                                 onClick={onToggleLike}
-                                className="group/heart w-12 h-12 rounded-full bg-white shadow-lg flex items-center justify-center border border-gray-100 hover:border-red-500 active:border-red-500 hover:shadow-xl active:shadow-xl hover:bg-red-50 active:bg-red-50 transition-all duration-200"
-                                aria-label="Like"
-                            >
-                                <motion.div
-                                    animate={{ scale: isLiked ? [1, 1.4, 1] : 1 }}
-                                    transition={{ duration: 0.35, ease: "easeOut" }}
-                                >
-                                    <Heart
-                                        className={`w-6 h-6 transition-colors duration-200 ${isLiked ? 'fill-red-500 text-red-500' : 'text-gray-400 group-hover/heart:text-red-500 group-active/heart:text-red-500'}`}
-                                    />
-                                </motion.div>
-                            </button>
+                                variant="modal"
+                            />
                         </div>
                     </div>
                 </motion.div>
@@ -206,9 +212,10 @@ export default function ItemDetailsModal({ item, isLiked, onToggleLike, onClose 
                 {zoomedImage && (
                     <motion.div
                         className="fixed inset-0 z-[90] bg-black/90 backdrop-blur-md flex items-center justify-center p-4"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
+                        variants={modalBackdropVariants}
+                        initial="hidden"
+                        animate="visible"
+                        exit="exit"
                         onClick={() => setZoomedImage(null)}
                     >
                         <button
@@ -220,9 +227,10 @@ export default function ItemDetailsModal({ item, isLiked, onToggleLike, onClose 
                         </button>
                         <motion.div
                             className="relative max-w-7xl max-h-[90vh] w-full h-full"
-                            initial={{ scale: 0.8 }}
-                            animate={{ scale: 1 }}
-                            exit={{ scale: 0.8 }}
+                            variants={zoomVariants}
+                            initial="hidden"
+                            animate="visible"
+                            exit="exit"
                             onClick={(e) => e.stopPropagation()}
                         >
                             <Image

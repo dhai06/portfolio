@@ -3,7 +3,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, PanInfo } from 'framer-motion';
 import Image from 'next/image';
-import { artistImages } from '@/lib/imagePreloader';
+import { artists } from '@/data/portfolioData';
+import { useImagePreload } from '@/context/ImagePreloadContext';
 
 // Calculate circular distance (shortest path around the ring)
 function getCircularDistance(index: number, currentIndex: number, total: number): number {
@@ -56,7 +57,7 @@ function getStyleForPosition(distance: number, isMobile: boolean) {
             scale: isMobile ? 0.4 : 0.55,
             zIndex: 10,
             rotateY: -60,
-            opacity: isMobile ? 0 : 0.4, // Hidden on mobile
+            opacity: isMobile ? 0 : 0.4,
         };
     }
     if (distance === -2) {
@@ -65,7 +66,7 @@ function getStyleForPosition(distance: number, isMobile: boolean) {
             scale: isMobile ? 0.4 : 0.55,
             zIndex: 10,
             rotateY: 60,
-            opacity: isMobile ? 0 : 0.4, // Hidden on mobile
+            opacity: isMobile ? 0 : 0.4,
         };
     }
 
@@ -79,7 +80,17 @@ function getStyleForPosition(distance: number, isMobile: boolean) {
     };
 }
 
-export default function ArtistCarousel() {
+// Skeleton placeholder for loading state
+function ArtistCarouselSkeleton() {
+    return (
+        <div className="relative w-full h-44 md:h-56 mt-2 pb-12 md:pb-8 rounded-2xl flex items-center justify-center">
+            <div className="w-28 h-28 md:w-56 md:h-56 rounded-2xl bg-gray-200 animate-pulse" />
+        </div>
+    );
+}
+
+// Main carousel content
+function ArtistCarouselContent() {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isPaused, setIsPaused] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
@@ -106,11 +117,11 @@ export default function ArtistCarousel() {
 
     // Navigation handlers
     const goNext = useCallback(() => {
-        setCurrentIndex((prev) => (prev + 1) % artistImages.length);
+        setCurrentIndex((prev) => (prev + 1) % artists.length);
     }, []);
 
     const goPrev = useCallback(() => {
-        setCurrentIndex((prev) => (prev - 1 + artistImages.length) % artistImages.length);
+        setCurrentIndex((prev) => (prev - 1 + artists.length) % artists.length);
     }, []);
 
     // Auto-advance carousel (pause on hover)
@@ -171,36 +182,32 @@ export default function ArtistCarousel() {
                 onDragEnd={handleDragEnd}
                 style={{ transformStyle: 'preserve-3d' }}
             >
-                {/* Render ALL images with stable keys */}
-                {artistImages.map((src, index) => {
-                    const distance = getCircularDistance(index, currentIndex, artistImages.length);
+                {artists.map((artist, index) => {
+                    const distance = getCircularDistance(index, currentIndex, artists.length);
                     const style = getStyleForPosition(distance, isMobile);
                     const isClickable = distance !== 0 && Math.abs(distance) <= 2;
 
                     return (
                         <motion.div
-                            key={src} // Stable key - element persists and animates
-                            className={`absolute w-28 h-28 md:w-56 md:h-56 rounded-2xl overflow-hidden ${isClickable ? 'cursor-pointer' : ''
-                                }`}
+                            key={artist.name}
+                            className={`absolute w-28 h-28 md:w-56 md:h-56 rounded-2xl overflow-hidden ${isClickable ? 'cursor-pointer' : ''}`}
                             animate={style}
                             transition={transition}
                             onClick={() => isClickable && handleImageClick(distance)}
                             style={{
                                 transformStyle: 'preserve-3d',
-                                // Use filter drop-shadow instead of box-shadow - NOT clipped by overflow:hidden
                                 filter: distance === 0
                                     ? 'drop-shadow(0 25px 25px rgba(0, 0, 0, 0.35))'
                                     : 'drop-shadow(0 10px 15px rgba(0, 0, 0, 0.25))',
                             }}
                         >
                             <Image
-                                src={src}
-                                alt={`Artist ${index + 1}`}
+                                src={artist.image}
+                                alt={artist.name}
                                 fill
                                 className="object-cover pointer-events-none"
                                 sizes="(max-width: 768px) 112px, 224px"
-                                priority
-                                loading="eager"
+                                draggable={false}
                             />
                         </motion.div>
                     );
@@ -208,4 +215,15 @@ export default function ArtistCarousel() {
             </motion.div>
         </div>
     );
+}
+
+export default function ArtistCarousel() {
+    const { isLoaded } = useImagePreload();
+
+    // Show skeleton while preloading, then instantly show carousel (no animation)
+    if (!isLoaded) {
+        return <ArtistCarouselSkeleton />;
+    }
+
+    return <ArtistCarouselContent />;
 }

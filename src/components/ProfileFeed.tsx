@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import { ChevronLeft, ChevronRight, BadgeCheck } from 'lucide-react';
 import { AnimatePresence, motion, useInView } from 'framer-motion';
+import React from 'react';
 import PhotoBlock from './PhotoBlock';
 import PromptBlock from './PromptBlock';
 import InfoPillsBlock from './InfoPillsBlock';
@@ -11,56 +12,13 @@ import AboutIntroBlock from './AboutIntroBlock';
 import SummaryBlock from './SummaryBlock';
 import ItemDetailsModal from './ItemDetailsModal';
 import { CardData, ImageItem, PromptData } from '@/data/portfolioData';
-import React, { useRef } from 'react';
 import { BlockVisibleProvider } from './BlockVisibleContext';
+import { slideVariants, scrollBlockAnimation } from '@/lib/animations';
+import { TIMING, SPRING } from '@/lib/constants';
 
 interface ProfileFeedProps {
     profiles: CardData[];
 }
-
-// Slide animation variants for Feature 3
-const slideVariants = {
-    enter: (direction: number) => ({
-        x: direction > 0 ? 1000 : -1000,
-        opacity: 0
-    }),
-    center: {
-        zIndex: 1,
-        x: 0,
-        opacity: 1
-    },
-    exit: (direction: number) => ({
-        zIndex: 0,
-        x: direction < 0 ? 1000 : -1000,
-        opacity: 0
-    })
-};
-
-// Stagger animation variants for Feature 4
-const containerVariants = {
-    hidden: { opacity: 0 },
-    show: {
-        opacity: 1,
-        transition: {
-            staggerChildren: 0.1,
-            delayChildren: 0.1,
-        }
-    }
-};
-
-const itemVariants = {
-    hidden: { opacity: 0, y: 50, scale: 0.9 },
-    show: {
-        opacity: 1,
-        y: 0,
-        scale: 1,
-        transition: {
-            type: "spring" as const,
-            bounce: 0.4,
-            duration: 0.8
-        }
-    }
-};
 
 // Scroll-triggered animation block component with index-based stagger
 interface ScrollAnimationBlockProps {
@@ -71,20 +29,21 @@ interface ScrollAnimationBlockProps {
 
 function ScrollAnimationBlock({ children, index, mountTime }: ScrollAnimationBlockProps) {
     const ref = useRef<HTMLDivElement>(null);
-    const isInView = useInView(ref, { once: true, margin: "-50px" });
+    const isInView = useInView(ref, { once: true, margin: '-50px' });
     const [startAnimation, setStartAnimation] = useState(false);
     const [delay, setDelay] = useState(0);
     const [hasAnimated, setHasAnimated] = useState(false);
 
     // When block enters viewport, calculate delay based on timing
-    React.useLayoutEffect(() => {
+    useLayoutEffect(() => {
         if (isInView && !startAnimation) {
             const now = Date.now();
             const timeSinceMount = now - mountTime;
 
-            // If entering viewport within 500ms of mount, use index-based stagger
-            // Otherwise (scrolled into view later), animate immediately
-            const calculatedDelay = timeSinceMount < 500 ? index * 0.1 : 0;
+            // If entering viewport within threshold of mount, use index-based stagger
+            const calculatedDelay = timeSinceMount < TIMING.STAGGER_THRESHOLD
+                ? index * 0.1
+                : 0;
 
             setDelay(calculatedDelay);
             setStartAnimation(true);
@@ -95,13 +54,11 @@ function ScrollAnimationBlock({ children, index, mountTime }: ScrollAnimationBlo
         <motion.div
             ref={ref}
             style={{ willChange: 'transform, opacity' }}
-            initial={{ opacity: 0, y: 60, scale: 0.95 }}
-            animate={startAnimation ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 60, scale: 0.95 }}
+            initial={scrollBlockAnimation.initial}
+            animate={startAnimation ? scrollBlockAnimation.animate : scrollBlockAnimation.hidden}
             transition={{
-                delay: delay,
-                type: "spring",
-                stiffness: 100,
-                damping: 20,
+                delay,
+                ...SPRING.DEFAULT,
             }}
             onAnimationComplete={() => {
                 if (startAnimation && !hasAnimated) {
@@ -128,7 +85,7 @@ export default function ProfileFeed({ profiles }: ProfileFeedProps) {
     const [mountTime, setMountTime] = useState(Date.now());
 
     // Reset mount time when profile changes
-    React.useEffect(() => {
+    useEffect(() => {
         setMountTime(Date.now());
     }, [currentIndex]);
 
@@ -144,10 +101,8 @@ export default function ProfileFeed({ profiles }: ProfileFeedProps) {
         setCurrentIndex((prev) => (prev - 1 + profiles.length) % profiles.length);
     };
 
-    // handleLike removed
-
     const toggleLike = (id: string, summary: string) => {
-        setLikedItems(prev => {
+        setLikedItems((prev) => {
             const next = new Map(prev);
             if (next.has(id)) {
                 next.delete(id);
@@ -161,7 +116,6 @@ export default function ProfileFeed({ profiles }: ProfileFeedProps) {
     // Heart click handler: toggles like/unlike AND opens modal (only when liking)
     const handleHeartClick = (item: ImageItem | PromptData, id: string, summary: string) => {
         const isCurrentlyLiked = likedItems.has(id);
-        // Toggle like state
         toggleLike(id, summary);
         // Open the modal only if we're liking (not unliking)
         if (!isCurrentlyLiked) {
@@ -266,15 +220,20 @@ export default function ProfileFeed({ profiles }: ProfileFeedProps) {
             {/* Sticky Header */}
             <header className="sticky top-0 z-50 bg-[var(--background)] border-b border-[var(--border)] px-4 py-3 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                    <h1 className="text-lg font-medium text-[var(--foreground)]">{currentProfile.name}</h1>
+                    <h1 className="text-lg font-medium text-[var(--foreground)]">
+                        {currentProfile.name}
+                    </h1>
                     {currentProfile.verified && (
                         <BadgeCheck className="w-5 h-5 text-[var(--accent)]" />
                     )}
                 </div>
-                <Menu profiles={profiles} onSelect={(index) => {
-                    setIsInitialMount(false);
-                    setCurrentIndex(index);
-                }} />
+                <Menu
+                    profiles={profiles}
+                    onSelect={(index) => {
+                        setIsInitialMount(false);
+                        setCurrentIndex(index);
+                    }}
+                />
             </header>
 
             {/* Scrollable Content with Slide Animation */}
@@ -283,23 +242,31 @@ export default function ProfileFeed({ profiles }: ProfileFeedProps) {
                     key={currentProfile.id}
                     custom={direction}
                     variants={slideVariants}
-                    initial={isInitialMount ? { opacity: 1, x: 0 } : "enter"}
+                    initial={isInitialMount ? { opacity: 1, x: 0 } : 'enter'}
                     animate="center"
                     exit="exit"
                     transition={{
-                        x: { type: 'spring', stiffness: 300, damping: 30 },
-                        opacity: { duration: 0.2 }
+                        x: SPRING.SLIDE,
+                        opacity: { duration: 0.2 },
                     }}
                     className="pb-24 px-4 py-4"
                 >
                     {/* Blocks animate with stagger effect when entering viewport */}
                     <div className="space-y-4">
                         {renderBlocks().map((block, index) => (
-                            <ScrollAnimationBlock key={`${currentProfile.id}-${index}`} index={index} mountTime={mountTime}>
+                            <ScrollAnimationBlock
+                                key={`${currentProfile.id}-${index}`}
+                                index={index}
+                                mountTime={mountTime}
+                            >
                                 {block}
                             </ScrollAnimationBlock>
                         ))}
-                        <ScrollAnimationBlock key={`${currentProfile.id}-pills`} index={renderBlocks().length} mountTime={mountTime}>
+                        <ScrollAnimationBlock
+                            key={`${currentProfile.id}-pills`}
+                            index={renderBlocks().length}
+                            mountTime={mountTime}
+                        >
                             <InfoPillsBlock pills={currentProfile.infoPills} />
                         </ScrollAnimationBlock>
                     </div>
@@ -328,10 +295,16 @@ export default function ProfileFeed({ profiles }: ProfileFeedProps) {
             {selectedItem && (
                 <ItemDetailsModal
                     item={selectedItem}
-                    isLiked={likedItems.has('src' in selectedItem ? selectedItem.id : (selectedItem.id || ''))}
+                    isLiked={likedItems.has(
+                        'src' in selectedItem ? selectedItem.id : selectedItem.id || ''
+                    )}
                     onToggleLike={() => {
-                        const id = 'src' in selectedItem ? selectedItem.id : (selectedItem.id || '');
-                        const summary = 'src' in selectedItem ? selectedItem.likeSummary : (selectedItem.likeSummary || selectedItem.answer);
+                        const id = 'src' in selectedItem
+                            ? selectedItem.id
+                            : selectedItem.id || '';
+                        const summary = 'src' in selectedItem
+                            ? selectedItem.likeSummary
+                            : selectedItem.likeSummary || selectedItem.answer;
                         toggleLike(id, summary);
                     }}
                     onClose={() => setSelectedItem(null)}
