@@ -72,7 +72,7 @@ function SkillsRailContent() {
                                 draggable={false}
                             />
                         </div>
-                        <p className="text-center text-xs md:text-sm font-medium text-gray-600 mt-2 select-none">
+                        <p className="text-center text-xs uppercase font-bold tracking-widest text-[var(--foreground)]/50 mt-2 select-none">
                             {skill.name}
                         </p>
                     </motion.div>
