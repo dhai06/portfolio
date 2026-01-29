@@ -134,6 +134,7 @@ export default function ProfileFeed({ profiles }: ProfileFeedProps) {
     const [selectedItem, setSelectedItem] = useState<ImageItem | PromptData | null>(null);
     const [isExiting, setIsExiting] = useState(false);
     const [pendingNavigation, setPendingNavigation] = useState<{ index: number; direction: number } | null>(null);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
     const currentProfile = profiles[currentIndex];
 
     // Track mount time for stagger calculation - resets when profile changes
@@ -340,10 +341,12 @@ export default function ProfileFeed({ profiles }: ProfileFeedProps) {
                     />
                     <Menu
                         profiles={profiles}
+                        currentIndex={currentIndex}
                         onSelect={(index) => {
                             const newDirection = index > currentIndex ? 1 : -1;
                             triggerNavigation(index, newDirection);
                         }}
+                        onMenuStateChange={setIsMenuOpen}
                     />
                 </div>
                 {/* Blur gradient fade */}
@@ -410,22 +413,32 @@ export default function ProfileFeed({ profiles }: ProfileFeedProps) {
             </AnimatePresence>
 
             {/* Navigation Buttons */}
-            <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex gap-4">
-                <button
-                    onClick={handlePrevious}
-                    className="w-16 h-16 rounded-full bg-white shadow-xl flex items-center justify-center border border-[var(--border)] hover:scale-105 active:scale-105 transition-transform"
-                    aria-label="Previous Profile"
-                >
-                    <ChevronLeft className="w-8 h-8 text-[var(--foreground)]" />
-                </button>
-                <button
-                    onClick={handleNext}
-                    className="w-16 h-16 rounded-full bg-white shadow-xl flex items-center justify-center border border-[var(--border)] hover:scale-105 active:scale-105 transition-transform"
-                    aria-label="Next Profile"
-                >
-                    <ChevronRight className="w-8 h-8 text-[var(--foreground)]" />
-                </button>
-            </div>
+            <AnimatePresence>
+                {!isMenuOpen && (
+                    <motion.div 
+                        className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex gap-4"
+                        initial={{ opacity: 0, y: 20, scale: 0.8 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 20, scale: 0.8 }}
+                        transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+                    >
+                        <button
+                            onClick={handlePrevious}
+                            className="w-16 h-16 rounded-full bg-white shadow-xl flex items-center justify-center border border-[var(--border)] hover:scale-105 active:scale-105 transition-transform"
+                            aria-label="Previous Profile"
+                        >
+                            <ChevronLeft className="w-8 h-8 text-[var(--foreground)]" />
+                        </button>
+                        <button
+                            onClick={handleNext}
+                            className="w-16 h-16 rounded-full bg-white shadow-xl flex items-center justify-center border border-[var(--border)] hover:scale-105 active:scale-105 transition-transform"
+                            aria-label="Next Profile"
+                        >
+                            <ChevronRight className="w-8 h-8 text-[var(--foreground)]" />
+                        </button>
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
             {/* Item Details Modal */}
             {selectedItem && (
